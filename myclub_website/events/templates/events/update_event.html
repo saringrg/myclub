@@ -2,6 +2,7 @@
 
 {% block content %}
 	{% if user.is_authenticated %}
+		{% if user == event.manager %}
 
 		<h1>Update Event</h1>
 		<br>
@@ -11,6 +12,16 @@
 			<br>
 			<input type="submit" value="Update" class="btn btn-secondary">
 		</form>
+
+		{% else %}
+		<h2>Access Denied</h2>
+		<p>Only the event's manager can update this event</p>
+
+		Logged In User: {{ user }}
+		<br>
+		Event Manager: {{ event.manager }}
+		<br>
+		{% endif %}
 	
 	{% else %}
 	
