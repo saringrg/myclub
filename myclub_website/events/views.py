@@ -4,13 +4,23 @@ from calendar import HTMLCalendar
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from .models import Event, Venue
+from django.contrib.auth.models import User
 from .forms import VenueForm, EventForm, EventFormAdmin
 from django.contrib import messages
 
 #import pagination stuff
 from django.core.paginator import Paginator
 
+#create my events page
+def my_events(request):
+	if request.user.is_authenticated:
+		me = request.user.id
+		events = Event.objects.filter(attendees= me)
 
+		return render(request, 'events/my_events.html', {"events":events})
+	else:
+		messages.success(request, ("You are not authorized to view this page"))
+		return redirect('home')
 
 #delete an venue
 def delete_venue(request, venue_id):
@@ -92,11 +102,22 @@ def search_venues(request):
 	else:
 		return render(request, 'events/search_venues.html', {}) 
 
+def search_events(request):
+	if request.method == "POST":
+		searched = request.POST['searched']
+		events = Event.objects.filter(description__contains=searched)
+
+		return render(request, 'events/search_events.html', {'searched':searched, 'events':events}) 
+	else:
+		return render(request, 'events/search_events.html', {}) 
+
 
 def show_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
+	venue_owner = User.objects.get(pk=venue.owner)
 	return render(request, 'events/show_venue.html', 
-		{'venue': venue}) 
+		{'venue': venue,
+		'venue_owner': venue_owner}) 
 
 
 def list_venues(request):
