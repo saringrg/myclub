@@ -170,7 +170,11 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 	month_number = int(month_number)
 
 	#create a calendar
-	cal = HTMLCalendar().formatmonth(year, month_number)
+	#cal = HTMLCalendar().formatmonth(year, month_number)
+	# Create a calendar with Bootstrap classes and custom styling for sizing
+	cal = HTMLCalendar().formatmonth(year, month_number).replace(
+	    '<table',
+	    '<table class="table table-bordered table-responsive-sm" style="width:30%; text-align:center;"')
 
 	#get current year
 	now = datetime.now()

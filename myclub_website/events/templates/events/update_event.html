@@ -1,6 +1,7 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
+	<br><br>
 	{% if user.is_authenticated %}
 		{% if user == event.manager %}
 

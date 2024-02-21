@@ -1,20 +1,31 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<style>
+  .navbar-nav .nav-item a.nav-link {
+    font-size: 20px;
+    font-weight: bold;
+    color: #343a40;
+    padding-left: 20px; /* Adjust the left padding as needed */
+    padding-right: 20px; /* Adjust the right padding as needed */
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top text-center">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">MyClub</a>
+    <a class="navbar-brand" href="{% url 'home' %}"><strong>MyClub</strong></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' '2025' 'March' %}">Calendar</a>
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
         </li>
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Event
           </a>
+
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'list-events' %}">All Events</a></li>
             
@@ -22,7 +33,7 @@
               <li><a class="dropdown-item" href="{% url 'add-event' %}">Add Event</a></li>
               <li><a class="dropdown-item" href="{% url 'my_events' %}">My Events</a></li>
             {% endif %}
-            <li><a class="dropdown-item" href="{% url 'search_events' %}">Search Event</a></li>
+
           </ul>
         </li>
 
@@ -40,6 +51,12 @@
           </ul>
         </li>
 
+      </ul>
+    </div>
+
+
+    <div class="ms-auto">
+      <ul class="navbar-nav">
         {% if user.is_authenticated %}
 
           <li class="nav-item">
@@ -57,15 +74,8 @@
           </li>
 
         {% endif %}
-
       </ul>
-
-      <form class="d-flex" method=POST action="{% url 'search-venues' %}">
-        {% csrf_token %}
-
-        <input class="form-control me-2" type="search" placeholder="Search Venues" aria-label="Search" name="searched">
-        <button class="btn btn-secondary" type="submit">Search</button>
-      </form>
     </div>
+
   </div>
 </nav>
