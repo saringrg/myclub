@@ -2,15 +2,14 @@
 
 {% block content %}
 	{% if user.is_authenticated %}
-	<div class="shadow p-4 mb-5 bg-body rounded">
-		<h4>Create Event</h4>
-
+	
 		{% if submitted %}
 
-			Your Event Was Submitted Successfully!
+			<h6>Your Event Was Submitted Successfully!</h6>
 
 		{% else %}
-
+		<div class="shadow p-4 mb-5 bg-body rounded">
+		<h4>Create Event</h4>
 			<style>
 				form {
 					margin: auto;

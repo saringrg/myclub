@@ -2,6 +2,7 @@
 
 {% block content %}
 	{% if user.is_authenticated %}
+		{% if user == venue.owner %}
 		<div class="shadow p-4 mb-5 bg-body rounded">
 
 			<h4>Update Venue</h4>
@@ -20,6 +21,16 @@
 				<input type="submit" value="Update" class="btn btn-secondary">
 			</form>
 		</div>
+
+		{% else %}
+			<h4>Access Denied</h4>
+			<p>Only the venue owner can update this venue</p>
+
+			Logged In User: {{ user }}
+			<br>
+			Venue Owner: {{ venue.owner }}
+			<br>
+		{% endif %}
 
 	{% else %}
 	

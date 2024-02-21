@@ -20,7 +20,7 @@
 			</form>
 	 	</div>
 
-			{% else %}
+		{% else %}
 			<h4>Access Denied</h4>
 			<p>Only the event's manager can update this event</p>
 
@@ -28,12 +28,12 @@
 			<br>
 			Event Manager: {{ event.manager }}
 			<br>
-			{% endif %}
+		{% endif %}
 		
-		{% else %}
+	{% else %}
 		
-			<h4>Sorry! You must be logged in to view this page</h4>
-			<a href="{% url 'login' %}">Login Here</a>
+		<h4>Sorry! You must be logged in to view this page</h4>
+		<a href="{% url 'login' %}">Login Here</a>
 
 	{% endif %}
 

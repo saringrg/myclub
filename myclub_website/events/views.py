@@ -25,18 +25,23 @@ def my_events(request):
 #delete an venue
 def delete_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
-	venue.delete()
-	return redirect('list-venues')
+	if request.user == venue.owner:
+		venue.delete()
+		messages.success(request, ("Your venue has been deleted"))
+		return redirect('list-venues')
+	else:
+		messages.success(request, ("You are not authorized to delete this venue"))
+		return redirect('list-venues')
 
 #delete an event
 def delete_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	if request.user == event.manager:
 		event.delete()
-		messages.success(request, ("Event Deleted"))
+		messages.success(request, ("Your event has been deleted"))
 		return redirect('list-events')
 	else:
-		messages.success(request, ("You are not authorized to Delete this event"))
+		messages.success(request, ("You are not authorized to delete this event"))
 		return redirect('list-events')
 
 
@@ -50,6 +55,7 @@ def update_event(request, event_id):
 	
 	if form.is_valid():
 		form.save()
+		messages.success(request, ("Your event has been updated"))
 		return redirect('list-events')
 
 	return render(request, 'events/update_event.html', 
@@ -91,6 +97,7 @@ def update_venue(request, venue_id):
 	form = VenueForm(request.POST or None, instance=venue)
 	if form.is_valid():
 		form.save()
+		messages.success(request, ("Your venue has been updated"))
 		return redirect('list-venues')
 
 	return render(request, 'events/update_venue.html', 
