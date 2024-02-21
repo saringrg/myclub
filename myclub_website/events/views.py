@@ -43,7 +43,8 @@ def delete_event(request, event_id):
 def update_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	if request.user.is_superuser:
-		form = EventFormAdmin(request.POST or None, instance=event)
+		#form = EventFormAdmin(request.POST or None, instance=event)
+		form = EventForm(request.POST or None, instance=event)
 	else:
 		form = EventForm(request.POST or None, instance=event)
 	
@@ -58,7 +59,8 @@ def add_event(request):
 	submitted = False
 	if request.method == "POST":
 		if request.user.is_superuser:
-			form = EventFormAdmin(request.POST)
+			#form = EventFormAdmin(request.POST)
+			form = EventForm(request.POST)
 			if form.is_valid():
 				form.save()
 				return HttpResponseRedirect('/add_event?submitted=True')
@@ -73,7 +75,8 @@ def add_event(request):
 	else:
 		#just going to the page, not submitting
 		if request.user.is_superuser:
-			form = EventFormAdmin
+			#form = EventFormAdmin
+			form = EventForm
 		else:
 			form = EventForm
 

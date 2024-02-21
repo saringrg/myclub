@@ -1,24 +1,22 @@
  {% extends 'events/base.html' %}
 
 {% block content %}
-	<br><br>
 	
 	{% if searched %}
 
-	<h3>You Searched for {{searched}}</h3>
+	<h4>You Searched for {{searched}}</h4>
 	<br>
 	
 		{% for event in events %}
 		<div class="card">
 		  <div class="card-header">
-		    {{event}}
+		    <h5>{{event}}</h5>
 		  </div>
 		  <div class="card-body">
-		    <h5 class="card-title">Venue: {{ event.venue }}</h5>
+		    <h6 class="card-title">Venue: {{ event.venue }}</h6>
 		    <p class="card-text">
 		    	<ul>
 					<li>Date: {{ event.event_date }}</li>
-					<li>Venue: {{ event.venue }}</li>
 					<li>Venue Website: {{ event.venue.web }}</li>
 					<li>Manager: {{ event.manager }}</li>
 					<li>Description: {{ event.description }}</li>
@@ -46,6 +44,8 @@
 		<br><br>
 		{% endfor %}
 
+	{% else  %}
+		<h4>Hey! You Forgot To Search For A Event</h4>
 	
 	{% endif %}
 

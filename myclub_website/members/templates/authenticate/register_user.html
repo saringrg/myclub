@@ -1,7 +1,6 @@
 {% extends 'authenticate/base.html' %}
 
 {% block content %}
-<br><br>
 {% if form.errors %}
 	
 	<div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -12,7 +11,8 @@
 {% endif %}
 
 	<div class="shadow p-4 mb-5 bg-body rounded">
-		<h1>Register</h1>
+		<center><h3>Sign Up</h3></center>
+		<hr>
 		<br>
 			<form action="{% url 'register_user' %}" method=POST>
 				{% csrf_token %}
