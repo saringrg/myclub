@@ -4,29 +4,36 @@
 	{% if user.is_authenticated %}
 		{% if user == event.manager %}
 
-		<h4>Update Event</h4>
-		<br>
-		<form action="" method=POST>
-			{% csrf_token %}
-			{{ form.as_p }}
+		<div class="shadow p-4 mb-5 bg-body rounded">
+			<h4>Update Event</h4>
+			<style>
+				form {
+					margin: auto;
+					padding: 20px;
+				}
+			</style>
+			<form action="" method=POST>
+				{% csrf_token %}
+				{{ form.as_p }}
+				<br>
+				<input type="submit" value="Update" class="btn btn-secondary">
+			</form>
+	 	</div>
+
+			{% else %}
+			<h4>Access Denied</h4>
+			<p>Only the event's manager can update this event</p>
+
+			Logged In User: {{ user }}
 			<br>
-			<input type="submit" value="Update" class="btn btn-secondary">
-		</form>
-
+			Event Manager: {{ event.manager }}
+			<br>
+			{% endif %}
+		
 		{% else %}
-		<h4>Access Denied</h4>
-		<p>Only the event's manager can update this event</p>
-
-		Logged In User: {{ user }}
-		<br>
-		Event Manager: {{ event.manager }}
-		<br>
-		{% endif %}
-	
-	{% else %}
-	
-		<h4>Sorry! You must be logged in to view this page</h4>
-		<a href="{% url 'login' %}">Login Here</a>
+		
+			<h4>Sorry! You must be logged in to view this page</h4>
+			<a href="{% url 'login' %}">Login Here</a>
 
 	{% endif %}
 

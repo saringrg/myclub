@@ -127,7 +127,7 @@ def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
 
 	#set up pagination
-	p = Paginator(Venue.objects.all(), 10)
+	p = Paginator(Venue.objects.all(), 1)
 	page = request.GET.get('page')
 	venues = p.get_page(page)
 	nums = "a" * venues.paginator.num_pages
@@ -157,7 +157,7 @@ def all_events(request):
 	event_list = Event.objects.all().order_by('event_date')
 
 	#set up pagination
-	p = Paginator(Event.objects.all(), 10)
+	p = Paginator(Event.objects.all(), 4)
 	page = request.GET.get('page')
 	events = p.get_page(page)
 	nums = "a" * events.paginator.num_pages

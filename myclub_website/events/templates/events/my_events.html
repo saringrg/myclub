@@ -1,29 +1,43 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
-	<h2>My Events</h2>
+	<h4>My Events</h4>
 	<br>
 	{% for event in events %}
 		<div class="card">
 		  <div class="card-header">
-		    {{event}}
+		    <h5>{{event}}</h5>
 		  </div>
 		  <div class="card-body">
-		    <h5 class="card-title">Venue: {{ event.venue }}</h5>
+		    <h6 class="card-title">Venue: {{ event.venue }}</h6>
 		    <p class="card-text">
 		    	<ul>
-					<li>Date: {{ event.event_date }}</li>
-					<li>Venue: {{ event.venue }}</li>
-					<li>Venue Website: {{ event.venue.web }}</li>
-					<li>Manager: {{ event.manager }}</li>
-					<li>Description: {{ event.description }}</li>
-					<li>Attendees:<br>
-					{% for user in event.attendees.all %}
-							{{ user }}<br> 
-					{% endfor%}
-					</li>
+					{% if event.event_date %}
+						<li>Date: {{ event.event_date }}</li>
+					{% endif %}
+
+					{% if event.venue.web %}
+						<li>Venue Website: {{ event.venue.web }}</li>
+					{% endif %}
+
+					{% if event.manager %}
+						<li>Manager: {{ event.manager }}</li>
+					{% endif %}
+
+					{% if event.description %}
+						<li>Description: {{ event.description }}</li>
+					{% endif %}
 				</ul>
-		    </p>
+			</p>
+
+					{% if event.attendees.all %}
+						<p>Special Attendees:</p>
+						<ul>
+						{% for user in event.attendees.all %}
+								<li>{{ user }}</li> 
+						{% endfor%}
+						</ul>
+					{% endif %}
 		  </div>
 		  {% if user.is_authenticated %}
 		  	{% if user == event.manager %}

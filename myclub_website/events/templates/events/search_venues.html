@@ -12,6 +12,7 @@
 				    <h5>{{ venue }}</h5>
 				  </div>
 				  <div class="card-body">
+				  	<p class="card-text">
 				    	<ul>	
 				    		{% if venue.address %}
 					    		<li>Address: {{ venue.address }}</li>
@@ -33,12 +34,12 @@
 								<li>Website: <a href="{{ venue.web }}">{{ venue.web }}</a></li>
 							{% endif %}
 
-							{% if venue.owner %}
-								<li>Owner Id: {{ venue.owner }}</li>
+							{% if venue_owner %}
+								<li>Owner: {{ venue_owner }}</li>
 							{% endif %}
 
 						</ul>
-
+						</p>
 				  </div>
 				</div>
 
