@@ -53,10 +53,10 @@ def delete_venue(request, venue_id):
 	if request.user.id == venue.owner:
 		venue.delete()
 		messages.success(request, ("Your venue has been deleted"))
-		return redirect('list-venues')
+		return redirect('my_venues')
 	else:
 		messages.success(request, ("You are not authorized to delete this venue"))
-		return redirect('list-venues')
+		return redirect('my_venues')
 
 #delete an event
 def delete_event(request, event_id):
@@ -64,10 +64,10 @@ def delete_event(request, event_id):
 	if request.user == event.manager:
 		event.delete()
 		messages.success(request, ("Your event has been deleted"))
-		return redirect('list-events')
+		return redirect('my_events')
 	else:
 		messages.success(request, ("You are not authorized to delete this event"))
-		return redirect('list-events')
+		return redirect('my_events')
 
 
 def update_event(request, event_id):
@@ -81,7 +81,7 @@ def update_event(request, event_id):
 	if form.is_valid():
 		form.save()
 		messages.success(request, ("Your event has been updated"))
-		return redirect('list-events')
+		return redirect('my_events')
 
 	return render(request, 'events/update_event.html', 
 		{'event': event, 'form':form}) 
@@ -123,7 +123,7 @@ def update_venue(request, venue_id):
 	if form.is_valid():
 		form.save()
 		messages.success(request, ("Your venue has been updated"))
-		return redirect('list-venues')
+		return redirect('my_venues')
 
 	return render(request, 'events/update_venue.html', 
 		{'venue': venue, 'form':form}) 
