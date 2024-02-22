@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 
 #create my events page
+"""
 def my_events(request):
 	if request.user.is_authenticated:
 		me = request.user.id
@@ -21,11 +22,35 @@ def my_events(request):
 	else:
 		messages.success(request, ("You are not authorized to view this page"))
 		return redirect('home')
+"""
+def my_venues(request):
+	venue_list = Venue.objects.all().order_by('name')
+
+	#set up pagination
+	p = Paginator(Venue.objects.all(), 5)
+	page = request.GET.get('page')
+	venues = p.get_page(page)
+	nums = "a" * venues.paginator.num_pages
+
+	return render(request, 'events/my_venues.html', 
+		{'venue_list': venue_list, 'venues': venues, 'nums':nums})
+
+def my_events(request):
+	event_list = Event.objects.all().order_by('event_date')
+
+	#set up pagination
+	p = Paginator(Event.objects.all(), 10)
+	page = request.GET.get('page')
+	events = p.get_page(page)
+	nums = "a" * events.paginator.num_pages
+
+	return render(request, 'events/my_events.html', 
+		{'event_list': event_list, 'events': events, 'nums':nums}) 
 
 #delete an venue
 def delete_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
-	if request.user == venue.owner:
+	if request.user.id == venue.owner:
 		venue.delete()
 		messages.success(request, ("Your venue has been deleted"))
 		return redirect('list-venues')
@@ -134,7 +159,7 @@ def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
 
 	#set up pagination
-	p = Paginator(Venue.objects.all(), 1)
+	p = Paginator(Venue.objects.all(), 7)
 	page = request.GET.get('page')
 	venues = p.get_page(page)
 	nums = "a" * venues.paginator.num_pages
@@ -164,7 +189,7 @@ def all_events(request):
 	event_list = Event.objects.all().order_by('event_date')
 
 	#set up pagination
-	p = Paginator(Event.objects.all(), 4)
+	p = Paginator(Event.objects.all(), 7)
 	page = request.GET.get('page')
 	events = p.get_page(page)
 	nums = "a" * events.paginator.num_pages

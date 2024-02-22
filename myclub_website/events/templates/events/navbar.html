@@ -24,35 +24,35 @@
           <a class="nav-link" href="{% url 'home' %}">Home</a>
         </li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Event
-          </a>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'list-events' %}">Event</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'my_events' %}">My Event</a>
+          </li>
 
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list-events' %}">All Events</a></li>
-            
-            {% if user.is_authenticated %}
-              <li><a class="dropdown-item" href="{% url 'add-event' %}">Add Event</a></li>
-              <li><a class="dropdown-item" href="{% url 'my_events' %}">My Events</a></li>
-            {% endif %}
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'list-events' %}">Event</a>
+          </li>
 
-          </ul>
-        </li>
+        {% endif %}
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Venue
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list-venues' %}">All Venues</a></li>
-            
-            {% if user.is_authenticated %}
-              <li><a class="dropdown-item" href="{% url 'add-venue' %}">Add Venue</a></li>
-            {% endif %}
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'list-venues' %}">Venue</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'my_venues' %}">My Venue</a>
+          </li>
+    
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'list-venues' %}">Venue</a>
+          </li>
 
-          </ul>
-        </li>
+        {% endif %}
 
       </ul>
     </div>
