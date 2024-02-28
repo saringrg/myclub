@@ -91,12 +91,12 @@ def add_event(request):
 	if request.method == "POST":
 		if request.user.is_superuser:
 			#form = EventFormAdmin(request.POST)
-			form = EventForm(request.POST)
+			form = EventForm(request.POST, request.FILES)
 			if form.is_valid():
 				form.save()
 				return HttpResponseRedirect('/add_event?submitted=True')
 		else:
-			form = EventForm(request.POST)
+			form = EventForm(request.POST, request.FILES)
 			if form.is_valid():
 				#form.save()
 				event = form.save(commit=False)

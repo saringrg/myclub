@@ -55,6 +55,9 @@
 						<li>Description: {{ event.description }}</li>
 					{% endif %}
 				</ul>
+				{% if event.venue.venue_image %}
+		        	<img src="{{ event.venue.venue_image.url }}" height=200 width=300 style="max-width: 100%;">
+		        {% endif %}
 			</p>
 
 					{% if event.attendees.all %}
