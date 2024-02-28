@@ -33,7 +33,7 @@
 		{% for venue in venues %}
 			<tr>
 				<td>
-					<a href="{% url 'show-venue' venue.id %}">{{ venue }}</a>
+					<a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">{{ venue }}</a>
 				</td>
 			<!--
 				{% if user.is_authenticated %}

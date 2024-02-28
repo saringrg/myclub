@@ -29,64 +29,43 @@
 
 	<br>
 
+	<div class="row row-cols-1 row-cols-md-3 g-4">
 	{% for event in events %}
-
-		<div class="card">
-		  <div class="card-header">
-		    <h5>{{event}}</h5>
-		  </div>
-		  <div class="card-body">
-		    <h6 class="card-title">Venue: {{ event.venue }}</h6>
-		    <p class="card-text">
-		    	<ul>
+	  <div class="col">
+	    <div class="card h-100">
+	    {% if event.venue.venue_image %}
+	      <img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;">
+	    {% endif %}
+	      <div class="card-body">
+	        <h5 class="card-title">{{event}}</h5>
+	        <p class="card-text">
+	        	<ul>
 		    		{% if event.event_date %}
 						<li>Date: {{ event.event_date }}</li>
 					{% endif %}
 
+					{% if event.venue %}
+						<li>Venue: <a href="{% url 'show-venue' event.venue.id %}" style="text-decoration: none;">{{ event.venue }}</a></li>
+					{% endif %}
+
 					{% if event.venue.web %}
-						<li>Venue Website: {{ event.venue.web }}</li>
+						<li>Website: {{ event.venue.web }}</li>
 					{% endif %}
 
 					{% if event.manager %}
-						<li>Manager: {{ event.manager }}</li>
+						<li>Event Host: {{ event.manager }}</li>
 					{% endif %}
 
 					{% if event.description %}
 						<li>Description: {{ event.description }}</li>
 					{% endif %}
 				</ul>
-				{% if event.venue.venue_image %}
-		        	<img src="{{ event.venue.venue_image.url }}" height=200 width=300 style="max-width: 100%;">
-		        {% endif %}
-			</p>
-
-					{% if event.attendees.all %}
-						<p>Special Attendees:</p>
-						<ul>
-						{% for user in event.attendees.all %}
-								<li>{{ user }}</li> 
-						{% endfor%}
-						</ul>
-					{% endif %}
-		  </div>
-		<!--
-		  {% if user.is_authenticated %}
-		  	{% if user == event.manager %}
-
-			  	<div class="card-footer text-muted">
-					<a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a> 
-				  	<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a> 
-			 	</div>
-
-		 	{% endif %}
-		 {% endif %}
-		-->
-		 
-		</div>
-
-		<br><br>
-		
-	{% endfor%}	
+	        </p>
+	      </div>
+	    </div>
+	  </div> 
+	  {% endfor%}
+	</div>	
 
 	<br><br><br>
 	<hr>

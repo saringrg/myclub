@@ -189,7 +189,7 @@ def all_events(request):
 	event_list = Event.objects.all().order_by('event_date')
 
 	#set up pagination
-	p = Paginator(Event.objects.all(), 7)
+	p = Paginator(Event.objects.all(), 5)
 	page = request.GET.get('page')
 	events = p.get_page(page)
 	nums = "a" * events.paginator.num_pages
