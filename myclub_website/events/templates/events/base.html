@@ -23,10 +23,23 @@
       {% if messages %}
 
         {% for message in messages %}
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <div class="alert alert-success" id="myAlert" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
+                  
+          <script type="text/javascript">
+              // Wait for the DOM to be fully loaded
+              document.addEventListener("DOMContentLoaded", function() {
+                  // Get the alert element
+                  var myAlert = document.getElementById('myAlert');
+
+                  // Set a timeout to hide the alert after 2000 milliseconds (1 seconds)
+                  setTimeout(function() {
+                      myAlert.style.display = 'none';
+                  }, 1000);
+              });
+          </script>
+          
         {% endfor %}
 
       {% endif%}

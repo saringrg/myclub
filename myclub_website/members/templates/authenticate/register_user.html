@@ -3,11 +3,22 @@
 {% block content %}
 {% if form.errors %}
 	
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-            There was an error with your form
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
+	<div class="alert alert-danger" id="myAlert" role="alert">
+	  There was an error with your form!
+	</div>
+            
+  <script type="text/javascript">
+	    // Wait for the DOM to be fully loaded
+	    document.addEventListener("DOMContentLoaded", function() {
+	        // Get the alert element
+	        var myAlert = document.getElementById('myAlert');
 
+	        // Set a timeout to hide the alert after 2000 milliseconds (2 seconds)
+	        setTimeout(function() {
+	            myAlert.style.display = 'none';
+	        }, 2000);
+	    });
+	</script>
 {% endif %}
 
 	<div class="shadow p-4 mb-5 bg-body rounded">
