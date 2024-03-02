@@ -3,20 +3,28 @@
 {% block content %}
 
 	<style>
-		h4 {
-            display: inline-block; /* Ensure the heading and button are on the same line */
-        }
-        .add {
-            float: right; /* Float the link to the right */
-        }
-    </style>
-	
-	<h4>My Venue</h4>
-	<a class="add" href="{% url 'add-venue' %}">
-		<button class="btn btn-secondary">Add Venue</button>
-	</a>
+	  .d-flex{
+	    padding-right: 10px; /* Adjust the right padding as needed */
+		}
+	</style>
 
-	<br><br>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  
+	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+	        <li class="nav-item">
+	          <a class="nav-link d-flex" href="{% url 'my_venues' %}"><h4>My Venue</h4></a>
+	        </li>
+
+	      </ul>
+	      <a class="d-flex" href="{% url 'add-venue' %}" style="text-decoration: none;">
+          	<button class="btn btn-outline-dark btn-light">Add Venue</button>
+          </a>
+	  	</div>
+	</nav>
+
+	<br>
 
 	<table class="table table-striped table-hover table-bordered">
 
@@ -25,7 +33,7 @@
 				{% if user.id == venue.owner %}
 					<tr>
 						<td>
-							<a href="{% url 'show-venue' venue.id %}">{{ venue }}</a>
+							<a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">{{ venue }}</a>
 						</td>
 						
 								<td align="right">
