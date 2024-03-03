@@ -37,13 +37,16 @@
         }
 
         .btn-secondary {
-            background-color: #6c757d;
-            color: #fff;
+            background-color: #d1410c;
             border: none;
             width: 100%; /* Set width to 100% */
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #f05537
         }
 
         .heading-container {
@@ -75,12 +78,12 @@
                 <input type="password" class="form-control" name="password">
             </div>
             
-            <input type="submit" value="Submit" class="btn btn-secondary">
+            <input type="submit" value="Log in" class="btn btn-secondary">
         </form>
 
         <hr>
         <div class="signup-link">
-            <p>Don't have an account? <a href="{% url 'register_user' %}">Sign Up </a></p>
+            <p>Don't have an account? <a href="{% url 'register_user' %}">Sign Up</a></p>
         </div>
     </div>
 {% endblock %}

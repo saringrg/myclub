@@ -1,13 +1,15 @@
 {% extends 'authenticate/base.html' %}
 
 {% block content %}
+<br>
+
 {% if form.errors %}
 	
 	<div class="alert alert-danger" id="myAlert" role="alert">
 	  There was an error with your form!
 	</div>
             
-  <script type="text/javascript">
+  	<script type="text/javascript">
 	    // Wait for the DOM to be fully loaded
 	    document.addEventListener("DOMContentLoaded", function() {
 	        // Get the alert element
@@ -20,24 +22,62 @@
 	    });
 	</script>
 {% endif %}
-
-	<div class="shadow p-4 mb-5 bg-body rounded">
-		<center><h3>Sign Up</h3></center>
+	<div class="form-container">
+		<div class="heading-container">
+            <h3>Create an account</h3>
+        </div>
 		<hr>
-		<br>
-			<form action="{% url 'register_user' %}" method=POST>
-				{% csrf_token %}
+		<form action="{% url 'register_user' %}" method=POST>
+			{% csrf_token %}
 
-				{{ form.as_p }}
-
-				<br>
-				
-				<input type="submit" value="Submit" class="btn btn-secondary">
-			</form>
+			{{ form.as_p }}				
+			<input type="submit" value="Create account" class="btn btn-custom">
+		</form>
 			
 	</div>
-	<br><br>
-	
+	<br>
+
+	<style>
+
+		.btn-custom {
+			color: #FFFFFF;
+            background-color: #d1410c;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-custom:hover {
+        	color: #FFFFFF;
+            background: #f05537
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .heading-container {
+            text-align: center;
+            margin-bottom: 20px; /* Add margin to the heading */
+        }
+
+        form {
+	      max-width: 100%; /* Adjust the width as needed */
+	      margin: 0 auto;
+	    }
+
+	    label {
+	      display: block;
+	      margin-bottom: 8px;
+	      font-weight: bold;
+	    }
+	</style>
 	
 {% endblock %}
 
