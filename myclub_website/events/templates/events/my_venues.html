@@ -3,25 +3,25 @@
 {% block content %}
 
 	<style>
-	  .d-flex{
-	    padding-right: 10px; /* Adjust the right padding as needed */
-		}
+		.d-flex {
+	    		padding-right: 10px; /* Adjust the right padding as needed */
+			}
 	</style>
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="navbar navbar-expand-lg navbar-light bg-white">
 	  
 	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
 	        <li class="nav-item">
-	          <a class="nav-link d-flex" href="{% url 'my_venues' %}"><h4>My Venue</h4></a>
+	          <a class="nav-link" href="{% url 'my_venues' %}"><h4>My Venue</h4></a>
 	        </li>
 
 	      </ul>
 	      <a class="d-flex" href="{% url 'add-venue' %}" style="text-decoration: none;">
-          	<button class="btn btn-outline-dark btn-light">Add Venue</button>
+          	<button class="btn btn-sm btn-custom">Add Venue</button>
           </a>
-	  	</div>
+	  	</div>   
 	</nav>
 
 	<br>

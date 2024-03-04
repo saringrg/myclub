@@ -4,8 +4,16 @@
 	{% if user.is_authenticated %}
 	
 		{% if submitted %}
+			<div class="alert alert-success" id="myAlert" role="alert">
+			  Your event has been submitted successfully!
+			</div>
 
-			<h6>Your Event Was Submitted Successfully!</h6>
+			<script>
+                // JavaScript code to redirect to the my_events page after 2 seconds
+                setTimeout(function() {
+                    window.location.href = "{% url 'my_events' %}";
+                }, 2000); // Redirect after 2 seconds (adjust as needed)
+            </script>
 
 		{% else %}
 		<div class="shadow p-4 mb-5 bg-body rounded">

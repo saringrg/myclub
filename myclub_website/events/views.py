@@ -36,7 +36,7 @@ def my_venues(request):
 		{'venue_list': venue_list, 'venues': venues, 'nums':nums})
 
 def my_events(request):
-	event_list = Event.objects.all().order_by('event_date')
+	event_list = Event.objects.all().order_by('-event_date')
 
 	#set up pagination
 	p = Paginator(Event.objects.all(), 10)
@@ -93,7 +93,10 @@ def add_event(request):
 			#form = EventFormAdmin(request.POST)
 			form = EventForm(request.POST, request.FILES)
 			if form.is_valid():
-				form.save()
+				#form.save()
+				event = form.save(commit=False)
+				event.manager = request.user    #logged in user
+				event.save()
 				return HttpResponseRedirect('/add_event?submitted=True')
 		else:
 			form = EventForm(request.POST, request.FILES)
@@ -186,7 +189,7 @@ def add_venue(request):
 
 
 def all_events(request):
-	event_list = Event.objects.all().order_by('event_date')
+	event_list = Event.objects.all().order_by('-event_date')
 
 	#set up pagination
 	p = Paginator(Event.objects.all(), 9)

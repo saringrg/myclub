@@ -5,7 +5,16 @@
 	
 		{% if submitted %}
 
-			<h6>Your Venue Was Submitted Successfully!</h6>
+			<div class="alert alert-success" id="myAlert" role="alert">
+			  Your venue has been submitted successfully!
+			</div>
+
+			<script>
+                // JavaScript code to redirect to the my_events page after 2 seconds
+                setTimeout(function() {
+                    window.location.href = "{% url 'my_venues' %}";
+                }, 2000); // Redirect after 2 seconds (adjust as needed)
+            </script>
 
 		{% else %}
 			<div class="shadow p-4 mb-5 bg-body rounded">

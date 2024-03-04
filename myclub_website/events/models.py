@@ -14,6 +14,8 @@ class Venue(models.Model):
 	def __str__(self):
 		return self.name
 
+	class Meta:
+		ordering = ['name']
 
 class MyClubUser(models.Model):
 	first_name = models.CharField(max_length=30)
@@ -37,3 +39,6 @@ class Event(models.Model):
 
 	def __str__(self):
 		return self.name
+
+	class Meta:
+		ordering = ['-event_date']

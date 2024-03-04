@@ -48,8 +48,16 @@
 	<br><br>
 
 	{% else  %}
-		<h4>Hey! You Forgot To Search For A Event</h4>
-	
+		<div class="alert alert-success" id="myAlert" role="alert">
+		  Hey! You forgot to search for a event!
+		</div>
+
+		<script>
+            // JavaScript code to redirect to the my_events page after 2 seconds
+            setTimeout(function() {
+                window.location.href = "{% url 'list-events' %}";
+            }, 2000); // Redirect after 2 seconds (adjust as needed)
+        </script>	
 	{% endif %}
 
 

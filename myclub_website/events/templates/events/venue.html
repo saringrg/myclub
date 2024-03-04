@@ -3,12 +3,18 @@
 {% block content %}
 
 	<style>
-	  .d-flex{
-	    padding-right: 10px; /* Adjust the right padding as needed */
+		.small-search-input {
+	        width: 200px; /* Adjust the width as needed */
+	        height: 35px;
+	        font-size: 14px; /* Adjust the font size as needed */
+	    }
+
+	    .d-flex{
+		    padding-right: 10px; /* Adjust the right padding as needed */
 		}
 	</style>
 
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="navbar navbar-expand-lg navbar-light bg-white">
 	  
 	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -22,8 +28,8 @@
 	      <form class="d-flex" method=POST action="{% url 'search-venues' %}">
 	        {% csrf_token %}
 
-	        <input class="form-control me-2" type="search" placeholder="Search Venues" aria-label="Search" name="searched">
-	        <button class="btn btn-outline-dark btn-light" type="submit">Search</button>
+	        <input class="form-control me-2 small-search-input" type="search" placeholder="Search Venues" aria-label="Search" name="searched">
+	        <button class="btn btn-outline-dark btn-light btn-sm btn-custom" type="submit">Search</button>
 	      </form>
 	  	</div>
 	</nav>
@@ -31,12 +37,51 @@
 	<br>
 	<table class="table table-striped table-hover table-bordered">
 
+	<div class="row row-cols-1 row-cols-md-3 g-4">
 		{% for venue in venues %}
-			<tr>
+			<div class="col">
+			    <div class="card h-100">
+			    <!--{% if venue.venue_image %}
+			      <img src="{{ venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;">
+			    {% endif %}-->
+			      <div class="card-body">
+			        <h5 class="card-title"><a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">{{ venue }}</a></h5>
+			        <p class="card-text">
+			        	<ul>
+				            {% if venue.address %}
+				              <li>Address: {{ venue.address }}</li>
+				            {% endif %}
+
+				            {% if venue.zip_code %}
+				              <li>Zip Code: {{ venue.zip_code }}</li>
+				            {% endif %}
+
+				            {% if venue.phone %}
+				              <li>Phone: {{ venue.phone }}</li>
+				            {% endif %}
+
+				            {% if venue.email_address %}
+				              <li>Email: {{ venue.email_address }}</li>
+				            {% endif %}
+
+				            {% if venue.web %}
+				              <li>Website: <a href="{{ venue.web }}">{{ venue.web }}</a></li>
+				            {% endif %}
+				            
+				            {% if venue_owner %}
+				              <li>Owner: {{ venue_owner }}</li>
+				            {% endif %}
+				        </ul>
+			        </p>
+			      </div>
+			    </div>
+			  </div> 
+			
+			<!--<tr>
 				<td>
 					<a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">{{ venue }}</a>
 				</td>
-			<!--
+			
 				{% if user.is_authenticated %}
 					{% if user.id == venue.owner %}
 						<td align="right">
@@ -45,10 +90,11 @@
 						</td>
 					{% endif %}
 				{% endif %}
-			-->
+			
 
-			</tr>
+			</tr>-->
 		{% endfor %}
+	</div>
 
 	</table>
 
