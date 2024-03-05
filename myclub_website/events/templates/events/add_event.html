@@ -16,26 +16,23 @@
             </script>
 
 		{% else %}
-		<div class="shadow p-4 mb-5 bg-body rounded">
-		<h4>Create Event</h4>
-			<style>
-				form {
-					margin: auto;
-					padding: 20px;
-				}
-			</style>
-
-			<form action="" method=POST enctype="multipart/form-data">
+		<div class="form-container">
+			<div class="heading-container">
+	            <h3>Create Event</h3>
+	        </div>
+			<hr>
+			<form action="" class="custom-form" method=POST enctype="multipart/form-data">
 				{% csrf_token %}
 
-				{{ form.as_p }}
-
-				<input type="submit" value="Submit" class="btn btn-secondary">
+				{{ form.as_p }}				
+				<input type="submit" value="Create" class="btn btn-custom">
 			</form>
+				
+		</div>
 			
 		{% endif %}
+		<br>
 
-	</div>
 
 	{% else %}
 	

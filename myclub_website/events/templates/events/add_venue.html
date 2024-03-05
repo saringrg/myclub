@@ -17,25 +17,22 @@
             </script>
 
 		{% else %}
-			<div class="shadow p-4 mb-5 bg-body rounded">
-			<h4>Add Venue</h4>
-			<style>
-				form {
-					margin: auto;
-					padding: 20px;
-				}
-			</style>
+			<div class="form-container">
+				<div class="heading-container">
+		            <h3>Add Venue</h3>
+		        </div>
+				<hr>
+				<form action="" class="custom-form" method=POST enctype="multipart/form-data">
+					{% csrf_token %}
 
-			<form action="" method=POST enctype="multipart/form-data">
-				{% csrf_token %}
-
-				{{ form.as_p }}
-
-				<input type="submit" value="Submit" class="btn btn-secondary">
-			</form>
+					{{ form.as_p }}				
+					<input type="submit" value="Add Venue" class="btn btn-custom">
+				</form>
+					
+			</div>
 
 		{% endif %}
-	</div>
+		<br>
 
 	{% else %}
 	

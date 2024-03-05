@@ -15,7 +15,7 @@ class EventFormAdmin(ModelForm):
 			'attendees': 'Attendees',
 			'description': '',
 		}
-
+ 
 		widgets = {
 			'name': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Event Name'}),
 			'event_date': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Event Date'}),
@@ -29,20 +29,20 @@ class EventFormAdmin(ModelForm):
 class EventForm(ModelForm):
 	class Meta:
 		model = Event
-		fields = ('name', 'event_date', 'venue', 'attendees', 'description')
+		fields = ('name', 'event_date', 'venue', 'description')
 		labels = {
 			'name': 'Event Name',
-			'event_date': 'YYYY-MM-DD HH:MM:SS',
+			'event_date': 'Event Date',
 			'venue': 'Venue',
-			'attendees': 'Attendees',
+			#'attendees': 'Attendees',
 			'description': 'Event Description',
 		}
 
 		widgets = {
 			'name': forms.TextInput(attrs={'class':'form-control'}),
-			'event_date': forms.TextInput(attrs={'class':'form-control'}),
+			'event_date': forms.TextInput(attrs={'class':'form-control', 'placeholder':'YYYY-MM-DD'}),
 			'venue': forms.Select(attrs={'class':'form-select'}),
-			'attendees': forms.SelectMultiple(attrs={'class':'form-select'}),
+			#'attendees': forms.SelectMultiple(attrs={'class':'form-select'}),
 			'description': forms.Textarea(attrs={'class':'form-control'}),
 		}
 		
@@ -52,21 +52,22 @@ class VenueForm(ModelForm):
 		model = Venue
 		fields = ('name', 'address', 'zip_code', 'phone', 'web', 'email_address', 'venue_image')
 		labels = {
-			'name': '',
-			'address': '',
-			'zip_code': '',
-			'phone': '',
-			'web': '',
-			'email_address': '',
-			'venue_image': '',
+			'name': 'Venue Name',
+			'address': 'Venue Address',
+			'zip_code': 'Zip Code',
+			'phone': 'Phone',
+			'web': 'Web Address',
+			'email_address': 'Email',
+			'venue_image': 'Venue Image',
 		}
 
 		widgets = {
-			'name': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Venue Name'}),
-			'address': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Address'}),
-			'zip_code': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Zip Code'}),
-			'phone': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Phone'}),
-			'web': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Web Address'}),
-			'email_address': forms.EmailInput(attrs={'class':'form-control', 'placeholder':'Email'}),
+			'name': forms.TextInput(attrs={'class':'form-control'}),
+			'address': forms.TextInput(attrs={'class':'form-control'}),
+			'zip_code': forms.TextInput(attrs={'class':'form-control'}),
+			'phone': forms.TextInput(attrs={'class':'form-control'}),
+			'web': forms.TextInput(attrs={'class':'form-control'}),
+			'email_address': forms.EmailInput(attrs={'class':'form-control'}),
+			'venue_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 		}
 		

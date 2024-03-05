@@ -4,21 +4,20 @@
 	{% if user.is_authenticated %}
 		{% if user == event.manager %}
 
-		<div class="shadow p-4 mb-5 bg-body rounded">
-			<h4>Update Event</h4>
-			<style>
-				form {
-					margin: auto;
-					padding: 20px;
-				}
-			</style>
-			<form action="" method=POST>
+		<div class="form-container">
+			<div class="heading-container">
+	            <h3>Update Event</h3>
+	        </div>
+			<hr>
+			<form action="" class="custom-form" method=POST>
 				{% csrf_token %}
-				{{ form.as_p }}
-				<br>
-				<input type="submit" value="Update" class="btn btn-secondary">
+
+				{{ form.as_p }}				
+				<input type="submit" value="Update" class="btn btn-custom">
 			</form>
-	 	</div>
+				
+		</div>
+		<br>
 
 		{% else %}
 			<h4>Access Denied</h4>
