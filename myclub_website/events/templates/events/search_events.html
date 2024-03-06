@@ -23,7 +23,7 @@
 	  <div class="col">
 	    <div class="card h-100">
 	    {% if event.venue.venue_image %}
-	      <img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;">
+	      <a href="{% url 'show-event' event.id %}"><img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;"></a>
 	    {% endif %}
 	      <div class="card-body">
 	        <h5 class="card-title">{{event}}</h5>
@@ -46,7 +46,7 @@
 					{% endif %}
 
 					{% if event.description %}
-						<li>Description: {{ event.description }}</li>
+						<li>Description: {{ event.description|linebreaksbr|truncatechars:50 }}</li>
 					{% endif %}
 				</ul>
 	        </p>

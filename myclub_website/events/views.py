@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import calendar
 from calendar import HTMLCalendar 
 from datetime import datetime
@@ -157,6 +157,9 @@ def show_venue(request, venue_id):
 		{'venue': venue,
 		'venue_owner': venue_owner}) 
 
+def show_event(request, event_id):
+	event = get_object_or_404(Event, pk=event_id)
+	return render(request, 'events/show_event.html', {'event': event})
 
 def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
