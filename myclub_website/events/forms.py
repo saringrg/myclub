@@ -50,7 +50,7 @@ class EventForm(ModelForm):
 class VenueForm(ModelForm):
 	class Meta:
 		model = Venue
-		fields = ('name', 'address', 'zip_code', 'phone', 'web', 'email_address', 'venue_image')
+		fields = ('name', 'address', 'zip_code', 'phone', 'web', 'email_address', 'venue_description', 'venue_image')
 		labels = {
 			'name': 'Venue Name',
 			'address': 'Venue Address',
@@ -58,6 +58,7 @@ class VenueForm(ModelForm):
 			'phone': 'Phone',
 			'web': 'Web Address',
 			'email_address': 'Email',
+			'venue_description': 'Venue Description',
 			'venue_image': 'Venue Image',
 		}
 
@@ -68,6 +69,7 @@ class VenueForm(ModelForm):
 			'phone': forms.TextInput(attrs={'class':'form-control'}),
 			'web': forms.TextInput(attrs={'class':'form-control'}),
 			'email_address': forms.EmailInput(attrs={'class':'form-control'}),
+			'venue_description': forms.Textarea(attrs={'class':'form-control'}),
 			'venue_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 		}
 		

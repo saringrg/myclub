@@ -15,30 +15,9 @@
 	      </form>	
 		</div>
 	</nav>
-<!--
-	<nav class="navbar navbar-expand-lg navbar-light bg-white">
-	  
-	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-	        <li class="nav-item">
-	          <a class="nav-link" href="{% url 'list-venues' %}"><h4>Venues</h4></a>
-	        </li>
-
-	      </ul>
-
-	      <form class="d-flex" method=POST action="{% url 'search-venues' %}">
-	        {% csrf_token %}
-
-	        <input class="form-control me-2 small-search-input" type="search" placeholder="Search Venues" aria-label="Search" name="searched">
-	        <button class="btn btn-outline-dark btn-light btn-sm btn-custom" type="submit">Search</button>
-	      </form>
-	  	</div>
-	</nav>-->
 
 	<br>
-	<table class="table table-striped table-hover table-bordered">
-
+	
 	<div class="row row-cols-1 row-cols-md-3 g-4">
 		{% for venue in venues %}
 			<div class="col">
@@ -78,27 +57,10 @@
 			      </div>
 			    </div>
 			  </div> 
-			
-			<!--<tr>
-				<td>
-					<a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">{{ venue }}</a>
-				</td>
-			
-				{% if user.is_authenticated %}
-					{% if user.id == venue.owner %}
-						<td align="right">
-							<a href="{% url 'update-venue' venue.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
-							<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-						</td>
-					{% endif %}
-				{% endif %}
-			
-
-			</tr>-->
 		{% endfor %}
 	</div>
 
-	</table>
+	
 
 	<!--<br><br>
 	{{ venues }}<br>

@@ -1,12 +1,23 @@
  {% extends 'events/base.html' %}
 
 {% block content %}
-	
-	{% if searched %}
-
-	<h4>You Searched for {{searched}}</h4>
 	<br>
-	
+	{% if searched %}
+			<div class="alert alert-success" id="myAlert" role="alert">
+			  You Searched for {{searched}}
+			</div>
+
+			<script>
+                document.addEventListener('DOMContentLoaded', function () {
+			        setTimeout(function () {
+			            var myAlert = document.getElementById('myAlert');
+			            if (myAlert) {
+			                myAlert.style.display = 'none';
+			            }
+			        }, 1500); // 2000 milliseconds = 2 seconds
+			    });
+            </script>
+            	
 	<div class="row row-cols-1 row-cols-md-3 g-4">
 	{% for event in events %}
 	  <div class="col">

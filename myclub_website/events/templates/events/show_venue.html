@@ -1,56 +1,52 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
-
-	<style>
-	  .custom-container {
-	    max-width: 320px; /* Adjust the width as needed */
-	  }
-	</style>
 	
-	<div class="card custom-card">
-	  <div class="card-header">
-	    <h5>{{ venue }}</h5>
-	  </div>
-	  <div class="card-body">
-	    <div class="row">
-	      <div class="col-md-6 custom-container">
-	        {% if venue.venue_image %}
-	        <img src="{{ venue.venue_image.url }}" height=200 width=300 style="max-width: 100%;">
-	        {% endif %}
-	      </div>
-	      <div class="col-md-6">
-	        <p class="card-text">
-	          <ul>
-	            {% if venue.address %}
-	              <li>Address: {{ venue.address }}</li>
-	            {% endif %}
+<div class="venue-details">
+    {% if venue.venue_image %}
+        <div class="venue-image-container">
+            <img src="{{ venue.venue_image.url }}" alt="{{ venue.name }} Image" class="venue-image">
+        </div>
+    {% endif %}
 
-	            {% if venue.zip_code %}
-	              <li>Zip Code: {{ venue.zip_code }}</li>
-	            {% endif %}
+    <h3>{{ venue }}</h3>
 
-	            {% if venue.phone %}
-	              <li>Phone: {{ venue.phone }}</li>
-	            {% endif %}
-
-	            {% if venue.email_address %}
-	              <li>Email: {{ venue.email_address }}</li>
-	            {% endif %}
-
-	            {% if venue.web %}
-	              <li>Website: <a href="{{ venue.web }}">{{ venue.web }}</a></li>
-	            {% endif %}
-	            
-	            {% if venue_owner %}
-	              <li>Owner: {{ venue_owner }}</li>
-	            {% endif %}
-	          </ul>
-	        </p>
-	      </div>
+    <div class="flex-container">
+	    <div class="description">
+	    {% if venue.venue_description %}
+	        <p>{{ venue.venue_description }}</p>
+	    {% endif %}
 	    </div>
-	  </div>
+
+	    <div class="card car">
+	    	<ul class="list-group list-group-flush">
+		        {% if venue.address %}
+		            <li class="list-group-item"><strong>Address:</strong> {{ venue.address }}</li>
+		        {% endif %}
+
+		        {% if venue.zip_code %}
+		            <li class="list-group-item"><strong>Zip Code:</strong> {{ venue.zip_code }}</li>
+		        {% endif %}
+
+		        {% if venue.phone %}
+		            <li class="list-group-item"><strong>Phone:</strong> {{ venue.phone }}</li>
+		        {% endif %}
+
+		        {% if venue.email_address %}
+		            <li class="list-group-item"><strong>Email:</strong> {{ venue.email_address }}</li>
+		        {% endif %}
+
+		        {% if venue.web %}
+		            <li class="list-group-item"><strong>Website:</strong> <a href="{{ venue.web }}" target="_blank">{{ venue.web }}</a></li>
+		        {% endif %}
+		        
+		        {% if venue_owner %}
+		            <li class="list-group-item"><strong>Owner:</strong> {{ venue_owner }}</li>
+		        {% endif %}
+		    </ul>  
+		</div>
 	</div>
+</div>
+<br>
 
 {% endblock %}
-
