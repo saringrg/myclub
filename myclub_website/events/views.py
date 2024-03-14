@@ -5,11 +5,22 @@ from datetime import datetime
 from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from django.contrib.auth.models import User
-from .forms import VenueForm, EventForm, EventFormAdmin
+from .forms import VenueForm, EventForm, EventFormAdmin, EventRegistrationForm  
 from django.contrib import messages
 
 #import pagination stuff
 from django.core.paginator import Paginator
+
+
+def event_form_view(request, event_id):
+	# Assuming the user is authenticated
+	if request.user.is_authenticated:
+		event_instance = Event.objects.get(pk=event_id)
+		form = EventRegistrationForm(user=request.user, event_instance=event_instance)
+		return render(request, 'events/event_form.html', {'form': form})
+	else:
+		# Handle unauthenticated user case
+		pass
 
 #create my events page
 """

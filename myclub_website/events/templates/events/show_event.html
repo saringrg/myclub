@@ -4,7 +4,16 @@
 <br>
 	
 <div class="venue-details">
-	<h3>{{ event }}</h3>
+	<nav class="custom-nav">
+		<div>
+			<h3>{{ event }}</h3>
+		</div>
+		<div>
+			<a class="d-flex" href="{% url 'event-form' event_id=event.id %}" style="text-decoration: none;">
+	          	<button class="btn btn-sm btn-custom">Join Event</button>
+	        </a>	
+		</div>
+	</nav>
 
     <div class="flex-container">
 	    <div class="description">

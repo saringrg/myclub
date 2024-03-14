@@ -1,6 +1,30 @@
 from django import forms
 from django.forms import ModelForm
 from .models import Venue, Event
+from django.contrib.auth.models import User
+
+class EventRegistrationForm(forms.Form):
+	event_name = forms.CharField(label='Event Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+	event_date = forms.DateField(label='Event Date', widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'readonly': True}))
+	venue = forms.CharField(label='Venue', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+	first_name = forms.CharField(label='First Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+	last_name = forms.CharField(label='Last Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+	email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control', 'readonly': True}))
+
+	def __init__(self, *args, **kwargs):
+		event_instance = kwargs.pop('event_instance', None)  # Get the event instance from the kwargs
+		user = kwargs.pop('user', None)  # Get the user from the kwargs
+		super(EventRegistrationForm, self).__init__(*args, **kwargs)
+		if event_instance:
+			# If event instance is provided, populate the event name, event date, and venue fields
+			self.fields['event_name'].initial = event_instance.name
+			self.fields['event_date'].initial = event_instance.event_date
+			self.fields['venue'].initial = event_instance.venue
+		if user:
+			# If user is authenticated, populate the first name, last name, and email fields
+			self.fields['first_name'].initial = user.first_name
+			self.fields['last_name'].initial = user.last_name
+			self.fields['email'].initial = user.email
 
 #admin event form
 class EventFormAdmin(ModelForm):
