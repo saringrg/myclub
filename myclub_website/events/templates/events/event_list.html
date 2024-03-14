@@ -10,13 +10,14 @@
 			<form class="d-flex" method=POST action="{% url 'search_events' %}">
 		        {% csrf_token %}
 
-		        <input class="form-control me-2 small-search-input" type="search" placeholder="Search Events" aria-label="Search" name="searched">
+		        <input class="form-control me-2 small-search-input" type="search" placeholder="Search events" aria-label="Search" name="searched">
 		        <button class="btn btn-outline-dark btn-light btn-sm btn-custom" type="submit">Search</button>
 		      </form>	
 		</div>
 	</nav>
 
 	<br>
+	
 
 	<div class="row row-cols-1 row-cols-md-3 g-4">
 	{% for event in events %}

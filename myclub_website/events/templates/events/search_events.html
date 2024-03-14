@@ -1,76 +1,81 @@
- {% extends 'events/base.html' %}
+{% extends 'events/base.html' %}
 
 {% block content %}
-	<br>
-	{% if searched %}
-			<div class="alert alert-success" id="myAlert" role="alert">
-			  You Searched for {{searched}}
-			</div>
-
-			<script>
+    <br>
+    {% if searched %}
+        {% if events %}
+            <div class="alert alert-success" id="myAlert" role="alert">
+                You Searched for {{searched}}
+            </div>
+            
+            <script>
                 document.addEventListener('DOMContentLoaded', function () {
-			        setTimeout(function () {
-			            var myAlert = document.getElementById('myAlert');
-			            if (myAlert) {
-			                myAlert.style.display = 'none';
-			            }
-			        }, 1500); // 2000 milliseconds = 2 seconds
-			    });
+                    setTimeout(function () {
+                        var myAlert = document.getElementById('myAlert');
+                        if (myAlert) {
+                            myAlert.style.display = 'none';
+                        }
+                    }, 1500); // 2000 milliseconds = 2 seconds
+                });
             </script>
-            	
-	<div class="row row-cols-1 row-cols-md-3 g-4">
-	{% for event in events %}
-	  <div class="col">
-	    <div class="card h-100">
-	    {% if event.venue.venue_image %}
-	      <a href="{% url 'show-event' event.id %}"><img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;"></a>
-	    {% endif %}
-	      <div class="card-body">
-	        <h5 class="card-title">{{event}}</h5>
-	        <p class="card-text">
-	        	<ul>
-		    		{% if event.event_date %}
-						<li>Date: {{ event.event_date }}</li>
-					{% endif %}
+            <br>
 
-					{% if event.venue %}
-						<li>Venue: <a href="{% url 'show-venue' event.venue.id %}" style="text-decoration: none;">{{ event.venue }}</a></li>
-					{% endif %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for event in events %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if event.venue.venue_image %}
+                                <a href="{% url 'show-event' event.id %}">
+                                    <img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;">
+                                </a>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{event}}</h5>
+                                <p class="card-text">
+                                    <ul>
+                                        {% if event.event_date %}
+                                            <li>Date: {{ event.event_date }}</li>
+                                        {% endif %}
 
-					{% if event.venue.web %}
-						<li>Website: {{ event.venue.web }}</li>
-					{% endif %}
+                                        {% if event.venue %}
+                                            <li>Venue: <a href="{% url 'show-venue' event.venue.id %}" style="text-decoration: none;">{{ event.venue }}</a></li>
+                                        {% endif %}
 
-					{% if event.manager %}
-						<li>Event Host: {{ event.manager }}</li>
-					{% endif %}
+                                        {% if event.venue.web %}
+                                            <li>Website: {{ event.venue.web }}</li>
+                                        {% endif %}
 
-					{% if event.description %}
-						<li>Description: {{ event.description|linebreaksbr|truncatechars:50 }}</li>
-					{% endif %}
-				</ul>
-	        </p>
-	      </div>
-	    </div>
-	  </div> 
-	  {% endfor%}
-	</div>	
+                                        {% if event.manager %}
+                                            <li>Event Host: {{ event.manager }}</li>
+                                        {% endif %}
 
-	<br><br>
+                                        {% if event.description %}
+                                            <li>Description: {{ event.description|linebreaksbr|truncatechars:50 }}</li>
+                                        {% endif %}
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                    </div> 
+                {% endfor%}
+            </div>  
 
-	{% else  %}
-		<div class="alert alert-success" id="myAlert" role="alert">
-		  Hey! You forgot to search for a event!
-		</div>
+            <br><br>
+        {% else %}
+            <div class="alert alert-danger" id="noEventAlert" role="alert">
+                No {{searched}} related event found!
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-success" id="myAlert" role="alert">
+            Hey! You forgot to search for an event!
+        </div>
 
-		<script>
+        <script>
             // JavaScript code to redirect to the my_events page after 2 seconds
             setTimeout(function() {
                 window.location.href = "{% url 'list-events' %}";
             }, 2000); // Redirect after 2 seconds (adjust as needed)
-        </script>	
-	{% endif %}
-
-
+        </script>   
+    {% endif %}
 {% endblock %}
-
