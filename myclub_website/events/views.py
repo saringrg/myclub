@@ -7,11 +7,50 @@ from .models import Event, Venue
 from django.contrib.auth.models import User
 from .forms import VenueForm, EventForm, EventFormAdmin, EventRegistrationForm  
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 #import pagination stuff
 from django.core.paginator import Paginator
 
+def event_form_view(request, event_id):
+	# Assuming the user is authenticated
+	if request.user.is_authenticated:
+		event_instance = Event.objects.get(pk=event_id)
+		form = EventRegistrationForm(event_instance=event_instance, user=request.user)
+		if request.method == 'POST':
+			form = EventRegistrationForm(request.POST, event_instance=event_instance, user=request.user)
+			if form.is_valid():
+				# Get form data
+				event_name = event_instance.name
+				event_date = event_instance.event_date
+				venue = event_instance.venue.name if event_instance.venue else "N/A"
+				first_name = request.user.first_name
+				last_name = request.user.last_name
+				user_email = request.user.email
 
+				# Compose email message
+				subject = 'Event Registration Confirmation'
+				message = f'Thank you, {first_name} {last_name}, for registering for the event "{event_name}".\n'
+				message += f'Event Date: {event_date}\n'
+				message += f'Venue: {venue}\n'
+				# Include other event details as needed
+
+				# Send email
+				send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email])
+
+				# Add success message
+				messages.success(request, 'A mail has been sent to you email!')
+
+
+	 # Redirect or render a success message
+
+		return render(request, 'events/event_form.html', {'form': form})
+	else:
+		# Handle unauthenticated user case
+		pass
+
+"""
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated
 	if request.user.is_authenticated:
@@ -21,7 +60,7 @@ def event_form_view(request, event_id):
 	else:
 		# Handle unauthenticated user case
 		pass
-
+"""
 #create my events page
 """
 def my_events(request):

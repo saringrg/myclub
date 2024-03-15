@@ -115,6 +115,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
  #   os.path.join(BASE_DIR, 'static'),
   #  )
 
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "myclub"
+EMAIL_HOST_USER = os.environ.get("AA_EMAIL_HOST_USER")  # Enter your Gmail address
+EMAIL_HOST_PASSWORD = os.environ.get("AA_EMAIL_HOST_PASSWORD")      # Enter your Gmail password
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
