@@ -1,21 +1,27 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
+	<div class="calendar-container">
+        <div class="row">
+            <div class="col-md-4">
+                <center>
+                    {{ prev_month_calendar|safe }}
+                </center>
+            </div>
+            <div class="col-md-4">
+                <center>
+                    {{ current_month_calendar|safe }}
+                </center>
+            </div>
+            <div class="col-md-4">
+                <center>
+                    {{ next_month_calendar|safe }}
+                </center>
+            </div>
+        </div>
+    </div>
 
-	<style>
-		.event-date {
-		    background-color: #ffc107; /* Yellow background */
-		    color: #000; /* Black text */
-		    /* Add any other styling as needed */
-		}
-	</style>
-	<br>
-	<center>
-	{{ cal|safe }}
-	</center>
-	<br>
 	<h4>Events for the Month</h4>
-	<hr>
 	
 	{% if event_list %}
 		<div class="row row-cols-1 row-cols-md-3 g-4">

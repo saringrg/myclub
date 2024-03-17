@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import calendar
 from calendar import HTMLCalendar 
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from django.contrib.auth.models import User
@@ -256,70 +256,79 @@ def all_events(request):
 	return render(request, 'events/event_list.html', 
 		{'event_list': event_list, 'events': events, 'nums':nums}) 
 
-def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
-	month = month.capitalize()
-	# Convert month from name to number
-	month_number = list(calendar.month_name).index(month)
-	month_number = int(month_number)
+def generate_calendar(year, month, event_dates):
+	month_name = calendar.month_name[month]
+	month_abbr = calendar.month_abbr[month]
 
-	# Create a calendar with Bootstrap classes and custom styling for sizing
 	cal = format_html('<table class="table table-bordered table-responsive-sm" style="width:30%; text-align:center;">')
-	cal += format_html('<tr><th colspan="7">{0} {1}</th></tr>', month, year)
+	cal += format_html('<tr><th colspan="7">{0} {1}</th></tr>', month_name, year)
 	cal += format_html('<tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th><th>{5}</th><th>{6}</th></tr>',
-	*calendar.day_abbr)
+						*calendar.day_abbr)
 
-	# Get the number of days in the month and the weekday of the first day
-	num_days = calendar.monthrange(year, month_number)[1]
-	first_weekday = calendar.monthrange(year, month_number)[0]
-
-	event_dates = list(Event.objects.filter(event_date__year=year, event_date__month=month_number).values_list('event_date__day', flat=True))
+	num_days = calendar.monthrange(year, month)[1]
+	first_weekday = calendar.monthrange(year, month)[0]
 
 	day_count = 1
-
-	# Create the calendar table rows
 	for i in range(6):
 		cal += '<tr>'
 		for j in range(7):
-			if i == 0 and j < first_weekday:
-				cal += '<td></td>'
-			elif day_count > num_days:
+			if (i == 0 and j < first_weekday) or (day_count > num_days):
 				cal += '<td></td>'
 			else:
 				if day_count in event_dates:
-					cal += format_html('<td style="cursor:pointer; background-color: lightblue;" onclick="window.location=\'/events/{0}/{1}/{2}/\'">{2}</td>',
-	                   year, month_number, day_count)
+					cal += format_html(
+					    '<td class="calendar-cell" style="cursor:pointer; background-color: lightblue; '
+					    'transition: background-color 0.3s;" '
+					    'onclick="window.location=\'/events/{0}/{1}/{2}/\'" '
+					    'onmouseover="this.style.backgroundColor=\'skyblue\'" '
+					    'onmouseout="this.style.backgroundColor=\'lightblue\'">{2}</td>',
+					    year, month, day_count
+					)
 				else:
 					cal += '<td>{}</td>'.format(day_count)
 				day_count += 1
 		cal += '</tr>'
 		if day_count > num_days:
 			break  # Stop generating rows if all days have been processed
-
 	cal += '</table>'
 
-	# Get current year
-	now = datetime.now()
-	current_year = now.year
+	return cal
 
-	# Query the events model for dates
-	event_list = Event.objects.filter(
-		event_date__year=year,
-		event_date__month=month_number)
+def home(request, year=None, month=None):
+	if year is None or month is None:
+		now = datetime.now()
+		year = now.year
+		month = now.month
+	else:
+		year = int(year)
+		month = int(month)
 
-	# Get current time
-	time = now.strftime('%I:%M %p')
+	prev_month = (datetime(year, month, 1) - timedelta(days=1)).strftime('%Y/%m')
+	next_month = (datetime(year, month, calendar.monthrange(year, month)[1]) + timedelta(days=1)).strftime('%Y/%m')
 
-	return render(request,
-		'events/home.html', {
-		"year": year,
-		"month": month,
-		"month_number": month_number,
-		"cal": cal,
-		"current_year": current_year,
-		"time": time,
-		"event_list": event_list,
-	})
+	current_event_dates = set(Event.objects.filter(event_date__year=year, event_date__month=month).values_list('event_date__day', flat=True))
+	prev_event_dates = set(Event.objects.filter(event_date__year=int(prev_month.split('/')[0]), event_date__month=int(prev_month.split('/')[1])).values_list('event_date__day', flat=True))
+	next_event_dates = set(Event.objects.filter(event_date__year=int(next_month.split('/')[0]), event_date__month=int(next_month.split('/')[1])).values_list('event_date__day', flat=True))
 
+	current_month_calendar = generate_calendar(year, month, current_event_dates)
+	prev_month_calendar = generate_calendar(*map(int, prev_month.split('/')), prev_event_dates)
+	next_month_calendar = generate_calendar(*map(int, next_month.split('/')), next_event_dates)
+
+	event_list = Event.objects.filter(event_date__year=year, event_date__month=month)
+	time = datetime.now().strftime('%I:%M %p')
+
+	return render(request, 'events/home.html', {
+				"year": year,
+				"month": month,
+				"current_month_calendar": current_month_calendar,
+				"prev_month_calendar": prev_month_calendar,
+				"next_month_calendar": next_month_calendar,
+				"event_list": event_list,
+				"time": time,
+				"prev_month": prev_month,
+				"next_month": next_month,
+				})
+    
 def events_for_date(request, year, month, day):
 	event_list = Event.objects.filter(
 		event_date__year=year,

@@ -20,7 +20,5 @@ urlpatterns = [
     path('my_venues', views.my_venues, name='my_venues'),
     path('search_events', views.search_events, name='search_events'),
     path('event-form/<int:event_id>/', views.event_form_view, name='event-form'),
-    path('events/<int:year>/<int:month>/<int:day>/', events_for_date, name='events_for_date'),
-    #path('alert_date/<int:year>/<int:month>/<int:day>/', views.alert_date, name='alert-date'),
-    #path('events/day/<int:year>/<int:month>/<int:day>/', views.events_for_day, name='events-for-day'),
+    path('events/<int:year>/<int:month>/<int:day>/', views.events_for_date, name='events_for_date'),
 ]
