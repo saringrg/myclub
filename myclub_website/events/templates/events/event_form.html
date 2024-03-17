@@ -3,17 +3,19 @@
 {% block content %}
 
     <div class="form-container">
-            <div class="heading-container">
-                <h3>Event Registration</h3>
-            </div>
-            <hr>
-            <form class="custom-form" method=POST>
-                {% csrf_token %}
-                {{ form.as_p }}             
-                <input type="submit" value="Join" class="btn btn-custom">
-            </form>
-                
+        <div class="heading-container">
+            <h3>Event Registration</h3>
         </div>
+        <hr>
+        <form class="custom-form" method=POST>
+            {% csrf_token %}
+            {{ form.as_p }}             
+            <input type="submit" value="Join" class="btn btn-custom">
+        </form>       
+    </div>
+
+    <br>
+
 
 {% endblock %}
 

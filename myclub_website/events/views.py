@@ -9,6 +9,9 @@ from .forms import VenueForm, EventForm, EventFormAdmin, EventRegistrationForm
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils.html import format_html
+from django.urls import reverse
+from .models import Event
 
 #import pagination stuff
 from django.core.paginator import Paginator
@@ -254,39 +257,78 @@ def all_events(request):
 		{'event_list': event_list, 'events': events, 'nums':nums}) 
 
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
-	name = "sarin"
 	month = month.capitalize()
-	#convert month from name to number
+	# Convert month from name to number
 	month_number = list(calendar.month_name).index(month)
 	month_number = int(month_number)
 
-	#create a calendar
-	#cal = HTMLCalendar().formatmonth(year, month_number)
 	# Create a calendar with Bootstrap classes and custom styling for sizing
-	cal = HTMLCalendar().formatmonth(year, month_number).replace(
-	    '<table',
-	    '<table class="table table-bordered table-responsive-sm" style="width:30%; text-align:center;"')
+	cal = format_html('<table class="table table-bordered table-responsive-sm" style="width:30%; text-align:center;">')
+	cal += format_html('<tr><th colspan="7">{0} {1}</th></tr>', month, year)
+	cal += format_html('<tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th><th>{5}</th><th>{6}</th></tr>',
+	*calendar.day_abbr)
 
-	#get current year
+	# Get the number of days in the month and the weekday of the first day
+	num_days = calendar.monthrange(year, month_number)[1]
+	first_weekday = calendar.monthrange(year, month_number)[0]
+
+	event_dates = list(Event.objects.filter(event_date__year=year, event_date__month=month_number).values_list('event_date__day', flat=True))
+
+	day_count = 1
+
+	# Create the calendar table rows
+	for i in range(6):
+		cal += '<tr>'
+		for j in range(7):
+			if i == 0 and j < first_weekday:
+				cal += '<td></td>'
+			elif day_count > num_days:
+				cal += '<td></td>'
+			else:
+				if day_count in event_dates:
+					cal += format_html('<td style="cursor:pointer; background-color: lightblue;" onclick="window.location=\'/events/{0}/{1}/{2}/\'">{2}</td>',
+	                   year, month_number, day_count)
+				else:
+					cal += '<td>{}</td>'.format(day_count)
+				day_count += 1
+		cal += '</tr>'
+		if day_count > num_days:
+			break  # Stop generating rows if all days have been processed
+
+	cal += '</table>'
+
+	# Get current year
 	now = datetime.now()
 	current_year = now.year
 
-	# query the events model for dates
+	# Query the events model for dates
 	event_list = Event.objects.filter(
-		event_date__year = year,
-		event_date__month = month_number)
+		event_date__year=year,
+		event_date__month=month_number)
 
-	#get current time
+	# Get current time
 	time = now.strftime('%I:%M %p')
 
-	return render(request, 
+	return render(request,
 		'events/home.html', {
-		"name" : name,
-		"year" : year,
-		"month" : month,
-		"month_number" : month_number,
-		"cal" : cal,
-		"current_year" : current_year,
-		"time" : time,
+		"year": year,
+		"month": month,
+		"month_number": month_number,
+		"cal": cal,
+		"current_year": current_year,
+		"time": time,
 		"event_list": event_list,
-		})
+	})
+
+def events_for_date(request, year, month, day):
+	event_list = Event.objects.filter(
+		event_date__year=year,
+		event_date__month=month,
+		event_date__day=day
+	)
+	return render(request, 'events/events_for_date.html', {
+		'event_list': event_list,
+		'year': year,
+		'month': month,
+		'day': day,
+	})

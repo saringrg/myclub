@@ -1,6 +1,14 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
+
+	<style>
+		.event-date {
+		    background-color: #ffc107; /* Yellow background */
+		    color: #000; /* Black text */
+		    /* Add any other styling as needed */
+		}
+	</style>
 	<br>
 	<center>
 	{{ cal|safe }}
