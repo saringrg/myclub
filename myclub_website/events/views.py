@@ -260,9 +260,9 @@ def generate_calendar(year, month, event_dates):
 	month_name = calendar.month_name[month]
 	month_abbr = calendar.month_abbr[month]
 
-	cal = format_html('<table class="table table-bordered table-responsive-sm" style="width:30%; text-align:center;">')
+	cal = format_html('<table class="calendar-table table table-bordered table-responsive-sm">')
 	cal += format_html('<tr><th colspan="7">{0} {1}</th></tr>', month_name, year)
-	cal += format_html('<tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th><th>{5}</th><th>{6}</th></tr>',
+	cal += format_html('<tr><th class="day-header">{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th><th>{5}</th><th>{6}</th></tr>',
 						*calendar.day_abbr)
 
 	num_days = calendar.monthrange(year, month)[1]
@@ -277,11 +277,11 @@ def generate_calendar(year, month, event_dates):
 			else:
 				if day_count in event_dates:
 					cal += format_html(
-					    '<td class="calendar-cell" style="cursor:pointer; background-color: lightblue; '
+					    '<td class="calendar-cell" style="cursor:pointer; background-color: #47bfff; '
 					    'transition: background-color 0.3s;" '
 					    'onclick="window.location=\'/events/{0}/{1}/{2}/\'" '
-					    'onmouseover="this.style.backgroundColor=\'skyblue\'" '
-					    'onmouseout="this.style.backgroundColor=\'lightblue\'">{2}</td>',
+					    'onmouseover="this.style.backgroundColor=\'#70cdff\'" '
+					    'onmouseout="this.style.backgroundColor=\'#47bfff\'">{2}</td>',
 					    year, month, day_count
 					)
 				else:

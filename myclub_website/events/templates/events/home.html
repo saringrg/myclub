@@ -1,27 +1,7 @@
-{% extends 'events/base.html' %}
+{% extends 'events/homebase.html' %}
+{% block content %}	
 
-{% block content %}
-	<div class="calendar-container">
-        <div class="row">
-            <div class="col-md-4">
-                <center>
-                    {{ prev_month_calendar|safe }}
-                </center>
-            </div>
-            <div class="col-md-4">
-                <center>
-                    {{ current_month_calendar|safe }}
-                </center>
-            </div>
-            <div class="col-md-4">
-                <center>
-                    {{ next_month_calendar|safe }}
-                </center>
-            </div>
-        </div>
-    </div>
-
-	<h4>Events for the Month</h4>
+	<h5 class="custom-head">Events for the Month!!!</h5>
 	
 	{% if event_list %}
 		<div class="row row-cols-1 row-cols-md-3 g-4">
