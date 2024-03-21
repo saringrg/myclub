@@ -3,6 +3,7 @@
 {% block content %}
 	{% if user.is_authenticated %}
 		{% if user.id == venue.owner %}
+		<br>
 			<div class="form-container">
 				<div class="heading-container">
 		            <h3>Update Venue</h3>

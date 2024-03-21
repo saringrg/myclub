@@ -1,0 +1,83 @@
+<style>
+  footer {
+    display: flex;
+    justify-content: space-between;
+    background-color: #292929;
+    padding-top: 40px;
+    padding-bottom: 15px;
+  }
+
+  .footer-brand {
+    flex: 1;
+    padding-left: 12px;
+    color: white;
+  }
+
+  .footer-links {
+    flex: 1;
+    color: white;
+  }
+
+  .footer-contact {
+    flex: 1;
+    color: white;
+  }
+
+  .footer-heading {
+    color: #f05537;
+    margin-bottom: 10px; /* Add margin bottom to create space between heading and list items */
+  }
+
+  .extra-padding {
+    padding-bottom: 4px;
+
+  }
+
+  .footer-ul {
+    list-style: none;
+    padding: 0; /* Remove default padding */
+  }
+
+  .footer-ul .footer-li {
+    margin-bottom: 10px;
+    padding: 5px 0; /* Add padding to list items */
+  }
+
+  .footer-ul .footer-li .footer-a {
+    text-decoration: none;
+    color: white;
+  }
+
+  .footer-ul .footer-li .footer-a:hover {
+    color: #d1410c;
+  }
+
+</style>
+
+<footer>
+    <div class="footer-brand">
+        <a class="navbar-brand" href="{% url 'home' %}">myclub</a>
+        <!-- Insert brand-related content here -->
+    </div>
+    <div class="footer-links">
+        <h4 class="footer-heading">Useful Links</h4> <!-- Add class for styling -->
+        <ul class="footer-ul">
+            <li class="footer-li"><a class="footer-a" href="{% url 'list-events' %}">Events</a></li>
+            <li class="footer-li"><a class="footer-a" href="{% url 'add-event' %}">Create Event</a></li>
+            <li class="footer-li"><a class="footer-a" href="{% url 'list-venues' %}">Venue</a></li>
+            <li class="footer-li"><a class="footer-a" href="{% url 'add-venue' %}">Add Venue</a></li>
+            <!-- Add more useful links as needed -->
+        </ul>
+    </div>
+    <div class="footer-contact">
+        <h4 class="footer-heading extra-padding">Contact Us</h4> <!-- Add class for styling -->
+        <ul class="footer-ul">
+            <strong>Location:</strong> <br> 
+            <li class="footer-li">Boudha-6, Kathmandu, Nepal</li>
+            <strong>Email:</strong> <br>
+            <li class="footer-li">np03cs4a210050@heraldcollege.edu.np</li> 
+            <strong>Phone:</strong> <br> 
+            <li class="footer-li">+977-1-597720</li>
+        </ul>
+    </div>
+</footer>

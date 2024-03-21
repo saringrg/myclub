@@ -8,11 +8,20 @@
 		<div>
 			<h3>{{ event }}</h3>
 		</div>
-		<div>
-			<a class="d-flex" href="{% url 'event-form' event_id=event.id %}" style="text-decoration: none;">
-	          	<button class="btn btn-sm btn-custom">Join Event</button>
-	        </a>	
-		</div>
+		{% if user.is_authenticated %}
+			<div>
+				<a class="d-flex" href="{% url 'event-form' event_id=event.id %}" style="text-decoration: none;">
+		          	<button class="btn btn-sm btn-custom">Join Event</button>
+		        </a>	
+			</div>
+		{% else %}
+			<div>
+				<a class="d-flex" href="{% url 'login' %}" style="text-decoration: none;">
+		          	<button class="btn btn-sm btn-custom">Join Event</button>
+		        </a>	
+			</div>
+		{% endif %}
+
 	</nav>
 
     <div class="flex-container">
