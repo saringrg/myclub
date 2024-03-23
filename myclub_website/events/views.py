@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import calendar
 from calendar import HTMLCalendar 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from django.contrib.auth.models import User
@@ -12,70 +12,52 @@ from django.conf import settings
 from django.utils.html import format_html
 from django.urls import reverse
 from .models import Event
-
-#import pagination stuff
 from django.core.paginator import Paginator
 
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated
 	if request.user.is_authenticated:
-		event_instance = Event.objects.get(pk=event_id)
-		form = EventRegistrationForm(event_instance=event_instance, user=request.user)
-		if request.method == 'POST':
-			form = EventRegistrationForm(request.POST, event_instance=event_instance, user=request.user)
-			if form.is_valid():
-				# Get form data
-				event_name = event_instance.name
-				event_date = event_instance.event_date
-				venue = event_instance.venue.name if event_instance.venue else "N/A"
-				first_name = request.user.first_name
-				last_name = request.user.last_name
-				user_email = request.user.email
+		event_instance = get_object_or_404(Event, pk=event_id)
+		#event_instance = Event.objects.get(pk=event_id)
 
-				# Compose email message
-				subject = 'Event Registration Confirmation'
-				message = f'Thank you, {first_name} {last_name}, for registering for the event "{event_name}".\n'
-				message += f'Event Date: {event_date}\n'
-				message += f'Venue: {venue}\n'
-				# Include other event details as needed
+		if event_instance.event_date < date.today():
+			event_closed = True
+			form = None
 
-				# Send email
-				send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email])
+		else:
+			event_closed = False
+			form = EventRegistrationForm(event_instance=event_instance, user=request.user)
+			if request.method == 'POST':
+				form = EventRegistrationForm(request.POST, event_instance=event_instance, user=request.user)
+				if form.is_valid():
+					# Get form data
+					event_name = event_instance.name 
+					event_date = event_instance.event_date
+					venue = event_instance.venue.name if event_instance.venue else "N/A"
+					first_name = request.user.first_name
+					last_name = request.user.last_name
+					user_email = request.user.email
 
-				# Add success message
-				messages.success(request, 'A mail has been sent to you email!')
+					# Compose email message
+					subject = 'Event Registration Confirmation'
+					message = f'Thank you, {first_name} {last_name}, for registering for the event "{event_name}".\n'
+					message += f'Event Date: {event_date}\n'
+					message += f'Venue: {venue}\n'
+					# Include other event details as needed
 
+					# Send email
+					send_mail(subject, message, settings.EMAIL_HOST_USER, [user_email])
 
-	 # Redirect or render a success message
+					# Add success message
+					messages.success(request, 'Registration Successful! A mail has been sent to your email...')
+					# Redirect to event list page
+					return redirect('list-events')
 
-		return render(request, 'events/event_form.html', {'form': form})
+		# Redirect or render a success message
+		return render(request, 'events/event_form.html', {'form': form, 'event_closed': event_closed})
 	else:
-		# Handle unauthenticated user case
-		pass
+		return redirect('login')
 
-"""
-def event_form_view(request, event_id):
-	# Assuming the user is authenticated
-	if request.user.is_authenticated:
-		event_instance = Event.objects.get(pk=event_id)
-		form = EventRegistrationForm(user=request.user, event_instance=event_instance)
-		return render(request, 'events/event_form.html', {'form': form})
-	else:
-		# Handle unauthenticated user case
-		pass
-"""
-#create my events page
-"""
-def my_events(request):
-	if request.user.is_authenticated:
-		me = request.user.id
-		events = Event.objects.filter(attendees= me)
-
-		return render(request, 'events/my_events.html', {"events":events})
-	else:
-		messages.success(request, ("You are not authorized to view this page"))
-		return redirect('home')
-"""
 def my_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
 
@@ -201,7 +183,6 @@ def search_events(request):
 		return render(request, 'events/search_events.html', {'searched':searched, 'events':events}) 
 	else:
 		return render(request, 'events/search_events.html', {}) 
-
 
 def show_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)

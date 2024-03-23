@@ -1,23 +1,12 @@
 {% extends 'authenticate/base.html' %}
 
 {% block content %}
-    <style>
-        /* Add your custom styles here */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
+    <style>        
         .form-container {
             max-width: 500px;
-            margin: auto;
+            margin-top: 70px; /* Adjust top margin as needed */
+            margin-left: 20px; /* Adjust left margin to move the form to the left */
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -61,10 +50,10 @@
     </style>
 
     <div class="form-container">
-        <div class="heading-container">
-            <h3>Log In</h3>
+        <div>
+            <h3><strong>Log In</strong></h3>
         </div>
-        <hr>
+        <br>
         <form action="" method="POST">
             {% csrf_token %}
             
@@ -81,7 +70,7 @@
             <input type="submit" value="Log in" class="btn btn-secondary">
         </form>
 
-        <hr>
+        <br><hr>
         <div class="signup-link">
             <p>Don't have an account? <a href="{% url 'register_user' %}">Sign Up</a></p>
         </div>

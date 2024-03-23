@@ -34,7 +34,7 @@
                                 <p class="card-text">
                                     <ul>
                                         {% if event.event_date %}
-                                            <li>Date: {{ event.event_date }}</li>
+                                            <li>Date: {{ event.event_date }} ({{ event.Days_till }})</li>
                                         {% endif %}
 
                                         {% if event.venue %}

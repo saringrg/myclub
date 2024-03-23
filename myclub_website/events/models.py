@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 
 class Venue(models.Model):
 	name = models.CharField('Venue Name', max_length=120)
@@ -29,7 +30,7 @@ class MyClubUser(models.Model):
 
 class Event(models.Model):
 	name = models.CharField('Event Name', max_length=120)
-	event_date = models.DateField('Event Date')
+	event_date = models.DateField('Event Date', blank=False)
 	venue = models.ForeignKey(Venue, blank=True, null=True, on_delete=models.CASCADE)
 	#venue = models.CharField(max_length=120)
 	#manager = models.CharField(max_length=60)
@@ -41,5 +42,17 @@ class Event(models.Model):
 	def __str__(self):
 		return self.name
 
+	@property
+	def Days_till(self):
+		today = date.today()
+		if self.event_date < today:
+			return "Registration Closed"
+		else:
+			days_till = self.event_date - today
+			if days_till.days == 1:
+				return f"{days_till.days} day left"
+			else:
+				return f"{days_till.days} days left"
+	
 	class Meta:
 		ordering = ['-event_date']

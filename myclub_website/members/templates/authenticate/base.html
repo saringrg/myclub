@@ -13,9 +13,25 @@
         font-family: "Open Sans", sans-serif;
         background: #FFFFFF;
       }
+
+      :root {
+        --bs-primary: #f05537;
+        --bs-orange: #d1410c; /* Define orange color variable */
+      }
+
+      .navbar-brand {
+        padding-left: 20px;
+        font-weight: bold;
+        color: var(--bs-primary) !important;
+      }
+
+      .navbar-brand:hover {
+        color: var(--bs-orange) !important;
+      }
     </style>
   </head>
   <body>
+    <br>
     
     <div class="container">
       {% if messages %}
@@ -46,6 +62,10 @@
 
   	  {% endblock %}
     </div>
+    <br><br><br><br><br>
+
+    {% include 'events/footer.html' %}
+
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

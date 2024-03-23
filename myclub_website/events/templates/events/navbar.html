@@ -28,11 +28,14 @@
   }
 
   .custom-link {
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 15px;
     color: #343a40;
-    padding-right: 18px; /* Adjust the right padding as needed */
     text-decoration: none;
+  }
+
+  .custom-pad {
+    padding-right: 5px;
+    padding-left: 10px;
   }
 
   .navbar-brand:hover {
@@ -90,7 +93,7 @@
         {% if user.is_authenticated %}
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">LogOut</a>
+            <a class="custom-link custom-pad" href="{% url 'logout' %}">Log Out</a>
           </li>
 
         {% else %}
@@ -99,7 +102,7 @@
           </li>
           
           <li class="nav-item">
-            <a class="custom-link" href="{% url 'login' %}">Log In</a> 
+            <a class="custom-link custom-pad" href="{% url 'login' %}">Log In</a> 
           </li>
           
         {% endif %}

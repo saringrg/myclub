@@ -1,22 +1,27 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
+
+    {% if event_closed %}
+        <h4>Sorry! Event registration has closed</h4>
+
+        <br><br><br><br>
+        <br><br><br>
+    {% else %}
     <br>
 
     <div class="form-container">
         <div class="heading-container">
             <h3>Event Registration</h3>
         </div>
-        <hr>
+        <hr>    
         <form class="custom-form" method=POST>
             {% csrf_token %}
             {{ form.as_p }}             
             <input type="submit" value="Join" class="btn btn-custom">
-        </form>       
+        </form>      
     </div>
-
-    <br>
-
+    {% endif %} 
 
 {% endblock %}
 
