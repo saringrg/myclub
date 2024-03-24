@@ -3,6 +3,27 @@
 {% block content %}
 
 	 <style>
+
+	 	:root {
+		    --bs-primary: #f05537;
+		    --bs-orange: #d1410c; /* Define orange color variable */
+		}
+
+		.navbar-brand {
+			padding-left: 90px;
+			font-weight: bold;
+			color: var(--bs-primary) !important;
+		}
+
+		.navbar-brand:hover {
+		    color: var(--bs-orange) !important;
+		}
+
+		.footer-brand {
+		    padding-top: 20px;
+		    padding-bottom: 25px;
+		}
+
         /* Custom styles for buttons */
         .custom-btn {
             color: white;
@@ -31,24 +52,70 @@
             overflow-y: auto; /* Add scrollbar if content overflows vertically */
             overflow-x: hidden; /* Hide horizontal scrollbar */
         }
+
+        .custom-heading {
+        	padding-top: 19px;
+        	color: #f05537;
+        }
+
+        .custom-heading1 {
+        	padding-top: 10px;
+        }
+
+        .count-container {
+	        display: flex; /* Use flexbox */
+	        flex-wrap: wrap; /* Allow wrapping if content exceeds width */
+	        gap: 50px; /* Gap between count boxes */
+	        padding-top: 20px;
+	        padding-left: 50px;
+	    }
+
+	    .count-box {
+	        padding: 10px; /* Padding around the count */
+	        border-radius: 5px; /* Rounded corners */
+	        font-size: 16px;
+	        width: 250px;
+	        height: 100px;
+	        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	    }
+
     </style>
 	
 	<div class="d-flex align-items-start">
 	  <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+	  	<div class="footer-brand">
+	        <a class="navbar-brand" href="{% url 'admin_approval' %}">myclub</a>
+	        <!-- Insert brand-related content here -->
+	    </div>
 	    <button class="nav-link active custom-btn" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</button>
 	    <button class="nav-link custom-btn" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Event</button>
 	    <button class="nav-link custom-btn" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Venue</button>
-	    <button class="nav-link custom-btn" id="v-pills-logout-tab" data-bs-toggle="pill" data-bs-target="#v-pills-logout" type="button" role="tab" aria-controls="v-pills-logout" aria-selected="false"><a class="custom-link" href="{% url 'logout' %}">Logout</a></button>
+	    <button class="nav-link custom-btn" data-bs-toggle="pill" type="button"><a class="custom-link" href="{% url 'logout' %}">Logout</a></button>
 	  </div>
 	  <div class="tab-content" id="v-pills-tabContent">
 	    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-	    	<h4>Admin Dashboard</h4>
+	    	<h4 class="custom-heading"><strong>Admin Dashboard</strong></h4> 
+	    	<br>
+	    	<div class="count-container">
+	    		<!-- User Count -->
+		        <div class="count-box">
+		            <h6 class="custom-heading1"><strong>Club Users</strong></h6> <center>{{ user_count }}</center>
+		        </div>
+		        <!-- Event Count -->
+		        <div class="count-box">
+		            <h6 class="custom-heading1"><strong>Events Count</strong></h6> <center>{{ event_count }}</center>
+		        </div>
+		        <!-- Venue Count -->
+		        <div class="count-box">
+		            <h6 class="custom-heading1"><strong>Venues Count</strong></h6> <center>{{ venue_count }}</center>
+		        </div>
+		    </div>
 	    </div>
 	    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-	    	<h4>Event</h4>
+	    	<h4 class="custom-heading"><strong>Event</strong></h4>
 	    </div>
 	    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
-	    	<h4>Venue</h4>
+	    	<h4 class="custom-heading"><strong>Venue</strong></h4>
 	    </div>
 	  </div>
 	</div>

@@ -16,7 +16,11 @@ from django.core.paginator import Paginator
 
 
 def admin_approval(request):
-	return render(request, 'events/admin_approval.html')
+	event_count = Event.objects.all().count()
+	venue_count = Venue.objects.all().count()
+	user_count = User.objects.all().count()
+
+	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count})
 
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated
