@@ -14,6 +14,10 @@ from django.urls import reverse
 from .models import Event
 from django.core.paginator import Paginator
 
+
+def admin_approval(request):
+	return render(request, 'events/admin_approval.html')
+
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated
 	if request.user.is_authenticated:

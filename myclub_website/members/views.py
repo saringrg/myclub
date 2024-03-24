@@ -11,9 +11,12 @@ def login_user(request):
 		user = authenticate(request, username=username, password=password)
 		if user is not None:
 			login(request, user)
-			messages.success(request, ("You have logged in"))
-			return redirect('home')
-			#redirect to a success page
+			if user.is_superuser:
+				#messages.success(request, ("You have logged in"))
+				return redirect('admin_approval')
+			else:
+				#messages.success(request, ("You have logged in"))
+				return redirect('home')
 		else:
 			#return an 'invalid login' error message
 			messages.success(request, ("Invalid login credentials. Please try again."))

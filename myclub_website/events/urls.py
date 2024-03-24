@@ -21,4 +21,5 @@ urlpatterns = [
     path('search_events', views.search_events, name='search_events'),
     path('event-form/<int:event_id>/', views.event_form_view, name='event-form'),
     path('events/<int:year>/<int:month>/<int:day>/', views.events_for_date, name='events_for_date'),
+    path('admin_approval', views.admin_approval, name='admin_approval'),
 ]
