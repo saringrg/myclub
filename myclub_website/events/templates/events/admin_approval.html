@@ -54,7 +54,8 @@
         }
 
         .custom-heading {
-        	padding-top: 19px;
+        	padding-top: 20px;
+        	padding-bottom: 10px;
         	color: #f05537;
         }
 
@@ -66,7 +67,7 @@
 	        display: flex; /* Use flexbox */
 	        flex-wrap: wrap; /* Allow wrapping if content exceeds width */
 	        gap: 50px; /* Gap between count boxes */
-	        padding-top: 20px;
+	        padding-top: 10px;
 	        padding-left: 50px;
 	    }
 
@@ -113,9 +114,69 @@
 	    </div>
 	    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
 	    	<h4 class="custom-heading"><strong>Event</strong></h4>
+	    	{% if user.is_superuser %}
+			    <table class="table">
+			        <thead>
+			            <tr>
+			                <th>Event</th>
+			                <th>Venue</th>
+			                <th>Date</th>
+			                <th>Website</th>
+			                <th>Host</th>
+			                <th>Actions</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            {% for event in event_list %}
+			            <tr>
+			                <td>{{ event }}</td>
+			                <td>{{ event.venue }}</td>
+			                <td>{{ event.event_date }}</td>
+			                <td>{{ event.venue.web }}</td>
+			                <td>{{ event.manager }}</td>
+			                <td>
+			                    <a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+			                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+			                </td>
+			            </tr>
+			            {% endfor %}
+			        </tbody>
+			    </table>
+			{% endif %}
 	    </div>
 	    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
 	    	<h4 class="custom-heading"><strong>Venue</strong></h4>
+	    	{% if user.is_superuser %}
+	    		<table class="table">
+				    <thead>
+				        <tr>
+				            <th>Venue</th>
+				            <th>Address</th>
+				            <th>Zip Code</th>
+				            <th>Phone</th>
+				            <th>Email</th>
+				            <th>Website</th>
+				            <th>Actions</th>
+				        </tr>
+				    </thead>
+				    <tbody>
+				        {% for venue in venue_list %}
+				        <tr>
+				            <td>{{ venue }}</td>
+				            <td>{{ venue.address }}</td>
+				            <td>{{ venue.zip_code }}</td>
+				            <td>{{ venue.phone }}</td>
+				            <td>{{ venue.email_address }}</td>
+				            <td><a href="{{ venue.web }}">{{ venue.web }}</a></td>
+				            <td>
+								<a href="{% url 'update-venue' venue.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+								<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+							</td>
+				        </tr>
+				        {% endfor %}
+				    </tbody>
+				</table>
+	    	{% endif %}
 	    </div>
 	  </div>
 	</div>

@@ -20,7 +20,10 @@ def admin_approval(request):
 	venue_count = Venue.objects.all().count()
 	user_count = User.objects.all().count()
 
-	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count})
+	event_list = Event.objects.all().order_by('-event_date')
+	venue_list = Venue.objects.all().order_by('name')
+
+	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count, "event_list":event_list, 'venue_list':venue_list})
 
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated
@@ -93,7 +96,11 @@ def my_events(request):
 #delete an venue
 def delete_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
-	if request.user.id == venue.owner:
+	
+	if request.user.is_superuser:
+		venue.delete()
+		return redirect('admin_approval')
+	elif request.user.id == venue.owner:
 		venue.delete()
 		messages.success(request, ("Your venue has been deleted"))
 		return redirect('my_venues')
@@ -102,7 +109,7 @@ def delete_venue(request, venue_id):
 		return redirect('my_venues')
 
 #delete an event
-def delete_event(request, event_id):
+"""def delete_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	if request.user == event.manager:
 		event.delete()
@@ -110,6 +117,20 @@ def delete_event(request, event_id):
 		return redirect('my_events')
 	else:
 		messages.success(request, ("You are not authorized to delete this event"))
+		return redirect('my_events')"""
+
+def delete_event(request, event_id):
+	event = Event.objects.get(pk=event_id)
+
+	if request.user.is_superuser:
+		event.delete()
+		return redirect('admin_approval')  # Redirect to admin_approval page for superuser
+	elif request.user == event.manager:
+		event.delete()
+		messages.success(request, "Your event has been deleted")
+		return redirect('my_events')
+	else:
+		messages.error(request, "You are not authorized to delete this event")
 		return redirect('my_events')
 
 

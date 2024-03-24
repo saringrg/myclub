@@ -32,7 +32,7 @@
 	<br>
 
 	{% for event in events %}
-		{% if user.is_authenticated %}
+		{% if user.is_authenticated %} 
 		  	{% if user == event.manager %}
 				
 				<div class="card">
