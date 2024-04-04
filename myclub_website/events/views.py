@@ -5,17 +5,63 @@ from datetime import date, datetime, timedelta
 from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from django.contrib.auth.models import User
-from .forms import VenueForm, EventForm, EventFormAdmin, EventRegistrationForm  
+from .forms import VenueForm, EventForm, EventRegistrationForm, VenueFormAdmin
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import Event
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
+
+def get_event_details(request):
+	event_id = request.GET.get('event_id')
+	event = get_object_or_404(Event, id=event_id)
+	data = {
+		'name': event.name,
+		'event_date': event.event_date,
+		'venue': event.venue.name,  # Assuming venue is related to Event model
+		'description': event.description  # Assuming manager is related to User model
+	}
+	return JsonResponse(data)
+
+def get_venue_details(request):
+	venue_id = request.GET.get('venue_id')
+	venue = get_object_or_404(Venue, id=venue_id)
+	data = {
+		'name': venue.name,
+		'address': venue.address,
+		'zip_code': venue.zip_code,
+		'phone': venue.phone,
+		'email_address': venue.email_address,
+		'web': venue.web,
+		'description': venue.venue_description,
+	}
+	return JsonResponse(data)
 
 def admin_approval(request):
+	if request.method == 'POST':
+		event_form = EventForm(request.POST)
+		venue_form = VenueFormAdmin(request.POST)
+		if event_form.is_valid():
+			event_id = request.POST.get('event_id')
+			event = get_object_or_404(Event, pk=event_id)
+			event_form = EventForm(request.POST, instance=event)
+			if event_form.is_valid():
+				event_form.save()
+				return redirect('admin_approval')
+		elif venue_form.is_valid():
+			venue_id = request.POST.get('venue_id')
+			venue = get_object_or_404(Venue, pk=venue_id)
+			venue_form = VenueFormAdmin(request.POST, instance=venue)
+			if venue_form.is_valid():
+				venue_form.save()
+				return redirect('admin_approval')
+	else: 
+		event_form = EventForm()
+		venue_form = VenueFormAdmin()
+
 	event_count = Event.objects.all().count()
 	venue_count = Venue.objects.all().count()
 	user_count = User.objects.all().count()
@@ -23,7 +69,7 @@ def admin_approval(request):
 	event_list = Event.objects.all().order_by('-event_date')
 	venue_list = Venue.objects.all().order_by('name')
 
-	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count, "event_list":event_list, 'venue_list':venue_list})
+	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count, "event_list":event_list, 'venue_list':venue_list, 'event_form':event_form, 'venue_form':venue_form})
 
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated
@@ -137,7 +183,6 @@ def delete_event(request, event_id):
 def update_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	if request.user.is_superuser:
-		#form = EventFormAdmin(request.POST or None, instance=event)
 		form = EventForm(request.POST or None, instance=event)
 	else:
 		form = EventForm(request.POST or None, instance=event)
@@ -305,39 +350,42 @@ def generate_calendar(year, month, event_dates):
 	return cal
 
 def home(request, year=None, month=None):
-	if year is None or month is None:
-		now = datetime.now()
-		year = now.year
-		month = now.month
+	if request.user.is_superuser:
+		return redirect('admin_approval')
 	else:
-		year = int(year)
-		month = int(month)
+		if year is None or month is None:
+			now = datetime.now()
+			year = now.year
+			month = now.month
+		else:
+			year = int(year)
+			month = int(month)
 
-	prev_month = (datetime(year, month, 1) - timedelta(days=1)).strftime('%Y/%m')
-	next_month = (datetime(year, month, calendar.monthrange(year, month)[1]) + timedelta(days=1)).strftime('%Y/%m')
+		prev_month = (datetime(year, month, 1) - timedelta(days=1)).strftime('%Y/%m')
+		next_month = (datetime(year, month, calendar.monthrange(year, month)[1]) + timedelta(days=1)).strftime('%Y/%m')
 
-	current_event_dates = set(Event.objects.filter(event_date__year=year, event_date__month=month).values_list('event_date__day', flat=True))
-	prev_event_dates = set(Event.objects.filter(event_date__year=int(prev_month.split('/')[0]), event_date__month=int(prev_month.split('/')[1])).values_list('event_date__day', flat=True))
-	next_event_dates = set(Event.objects.filter(event_date__year=int(next_month.split('/')[0]), event_date__month=int(next_month.split('/')[1])).values_list('event_date__day', flat=True))
+		current_event_dates = set(Event.objects.filter(event_date__year=year, event_date__month=month).values_list('event_date__day', flat=True))
+		prev_event_dates = set(Event.objects.filter(event_date__year=int(prev_month.split('/')[0]), event_date__month=int(prev_month.split('/')[1])).values_list('event_date__day', flat=True))
+		next_event_dates = set(Event.objects.filter(event_date__year=int(next_month.split('/')[0]), event_date__month=int(next_month.split('/')[1])).values_list('event_date__day', flat=True))
 
-	current_month_calendar = generate_calendar(year, month, current_event_dates)
-	prev_month_calendar = generate_calendar(*map(int, prev_month.split('/')), prev_event_dates)
-	next_month_calendar = generate_calendar(*map(int, next_month.split('/')), next_event_dates)
+		current_month_calendar = generate_calendar(year, month, current_event_dates)
+		prev_month_calendar = generate_calendar(*map(int, prev_month.split('/')), prev_event_dates)
+		next_month_calendar = generate_calendar(*map(int, next_month.split('/')), next_event_dates)
 
-	event_list = Event.objects.filter(event_date__year=year, event_date__month=month)
-	time = datetime.now().strftime('%I:%M %p')
+		event_list = Event.objects.filter(event_date__year=year, event_date__month=month)
+		time = datetime.now().strftime('%I:%M %p')
 
-	return render(request, 'events/home.html', {
-				"year": year,
-				"month": month,
-				"current_month_calendar": current_month_calendar,
-				"prev_month_calendar": prev_month_calendar,
-				"next_month_calendar": next_month_calendar,
-				"event_list": event_list,
-				"time": time,
-				"prev_month": prev_month,
-				"next_month": next_month,
-				})
+		return render(request, 'events/home.html', {
+					"year": year,
+					"month": month,
+					"current_month_calendar": current_month_calendar,
+					"prev_month_calendar": prev_month_calendar,
+					"next_month_calendar": next_month_calendar,
+					"event_list": event_list,
+					"time": time,
+					"prev_month": prev_month,
+					"next_month": next_month,
+					})
     
 def events_for_date(request, year, month, day):
 	event_list = Event.objects.filter(

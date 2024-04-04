@@ -22,4 +22,6 @@ urlpatterns = [
     path('event-form/<int:event_id>/', views.event_form_view, name='event-form'),
     path('events/<int:year>/<int:month>/<int:day>/', views.events_for_date, name='events_for_date'),
     path('admin_approval', views.admin_approval, name='admin_approval'),
+    path('get_event_details/', views.get_event_details, name='get_event_details'),
+    path('get_venue_details/', views.get_venue_details, name='get_venue_details'),
 ]

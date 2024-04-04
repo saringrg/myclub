@@ -115,6 +115,59 @@
 	    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
 	    	<h4 class="custom-heading"><strong>Event</strong></h4>
 	    	{% if user.is_superuser %}
+	    		<!-- Modal -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-scrollable">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">Update Event</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				        <form action="{% url 'admin_approval' %}" class="custom-form" method=POST>
+							{% csrf_token %}
+							{{ event_form.as_p }}			
+							<input type="hidden" name="event_id" id="event_id" value="">	
+							<button type="submit" class="btn btn-primary">Update</button>
+						</form>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<!-- Add JavaScript to populate event ID in the hidden input field when the "Update" button is clicked -->
+				<script>
+				    $(document).ready(function() {
+				        $('.btn-update-event').click(function() {
+				            var event_id = $(this).data('event-id');
+
+				            // Make an AJAX request to fetch event details
+				            $.ajax({
+				                url: '/get_event_details/',
+				                type: 'GET',
+				                data: {
+				                    'event_id': event_id
+				                },
+				                success: function(response) {
+				                    console.log(response); // Log the response to see if data is received
+				                    // Populate form fields with event details
+				                    $('#exampleModal').find('#id_name').val(response.name);
+				                    $('#exampleModal').find('#id_event_date').val(response.event_date);
+				                    $('#exampleModal').find('#id_venue').val(response.venue);
+				                    $('#exampleModal').find('#id_description').val(response.description);
+
+				                    // Update the hidden input field with the event ID
+				                    $('#exampleModal').find('#event_id').val(event_id);
+				                },
+				                error: function(xhr, status, error) {
+				                    // Handle error
+				                    console.error(xhr.responseText);
+				                }
+				            });
+				        });
+				    });
+				</script>
+
 			    <table class="table">
 			        <thead>
 			            <tr>
@@ -135,7 +188,7 @@
 			                <td>{{ event.venue.web }}</td>
 			                <td>{{ event.manager }}</td>
 			                <td>
-			                    <a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+			                	<a href="#" class="btn btn-outline-secondary btn-sm btn-update-event" data-bs-toggle="modal" data-bs-target="#exampleModal" data-event-id="{{ event.id }}">Update</a>
 			                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
 			                </td>
 			            </tr>
@@ -147,6 +200,59 @@
 	    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
 	    	<h4 class="custom-heading"><strong>Venue</strong></h4>
 	    	{% if user.is_superuser %}
+	    		<!-- Modal -->
+				<div class="modal fade" id="updateVenueModal" tabindex="-1" aria-labelledby="updateVenueModalLabel" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-scrollable">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="updateVenueModalLabel">Update Venue</h5>
+				        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				      </div>
+				      <div class="modal-body">
+				        <form id="updateVenueForm" action="{% url 'admin_approval' %}" method="POST" enctype="multipart/form-data">
+				          {% csrf_token %}
+				          {{ venue_form.as_p }}
+				          <input type="hidden" name="venue_id" id="venue_id" value="">
+				          <button type="submit" class="btn btn-primary">Update</button>
+				        </form>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<script>
+				$(document).ready(function() {
+				    $('.btn-update-venue').click(function() {
+				        var venue_id = $(this).data('venue-id');
+
+				        // Make an AJAX request to fetch venue details
+				        $.ajax({
+				            url: '/get_venue_details/',
+				            type: 'GET',
+				            data: {
+				                'venue_id': venue_id
+				            },
+				            success: function(response) {
+				                console.log(response); // Log the response to see if data is received
+				                // Populate form fields with venue details
+				                $('#updateVenueModal').find('#id_name').val(response.name);
+				                $('#updateVenueModal').find('#id_address').val(response.address);
+				                $('#updateVenueModal').find('#id_zip_code').val(response.zip_code);
+				                $('#updateVenueModal').find('#id_phone').val(response.phone);
+				                $('#updateVenueModal').find('#id_web').val(response.web);
+				                $('#updateVenueModal').find('#id_email_address').val(response.email_address);
+				                $('#updateVenueModal').find('#id_venue_description').val(response.description);
+				                $('#updateVenueModal').find('#venue_id').val(venue_id);
+				            },
+				            error: function(xhr, status, error) {
+				                // Handle error
+				                console.error(xhr.responseText);
+				            }
+				        });
+				    });
+				});
+				</script>
+
 	    		<table class="table">
 				    <thead>
 				        <tr>
@@ -169,7 +275,8 @@
 				            <td>{{ venue.email_address }}</td>
 				            <td><a href="{{ venue.web }}">{{ venue.web }}</a></td>
 				            <td>
-								<a href="{% url 'update-venue' venue.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+				         		<!-- Modal Trigger Button -->
+								<a href="#" class="btn btn-outline-secondary btn-sm btn-update-venue" data-bs-toggle="modal" data-bs-target="#updateVenueModal" data-venue-id="{{ venue.id }}">Update</a>
 								<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
 							</td>
 				        </tr>

@@ -96,4 +96,29 @@ class VenueForm(ModelForm):
 			'venue_description': forms.Textarea(attrs={'class':'form-control'}),
 			'venue_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 		}
+
+#create a venue form
+class VenueFormAdmin(ModelForm):
+	class Meta:
+		model = Venue
+		fields = ('name', 'address', 'zip_code', 'phone', 'web', 'email_address', 'venue_description')
+		labels = {
+			'name': 'Venue Name',
+			'address': 'Venue Address',
+			'zip_code': 'Zip Code',
+			'phone': 'Phone',
+			'web': 'Web Address',
+			'email_address': 'Email',
+			'venue_description': 'Venue Description',
+		}
+
+		widgets = {
+			'name': forms.TextInput(attrs={'class':'form-control'}),
+			'address': forms.TextInput(attrs={'class':'form-control'}),
+			'zip_code': forms.TextInput(attrs={'class':'form-control'}),
+			'phone': forms.TextInput(attrs={'class':'form-control'}),
+			'web': forms.TextInput(attrs={'class':'form-control'}),
+			'email_address': forms.EmailInput(attrs={'class':'form-control'}),
+			'venue_description': forms.Textarea(attrs={'class':'form-control'}),
+		}
 		
