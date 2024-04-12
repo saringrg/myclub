@@ -64,12 +64,24 @@ def admin_approval(request):
 
 	event_count = Event.objects.all().count()
 	venue_count = Venue.objects.all().count()
-	user_count = User.objects.all().count()
+	#user_count = User.objects.all().count()
+	user_count = User.objects.exclude(is_superuser=True).count()
 
 	event_list = Event.objects.all().order_by('-event_date')
 	venue_list = Venue.objects.all().order_by('name')
+	users = User.objects.all()
 
-	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count, "event_list":event_list, 'venue_list':venue_list, 'event_form':event_form, 'venue_form':venue_form})
+	return render(request, 'events/admin_approval.html', {"event_count":event_count, "venue_count":venue_count, "user_count":user_count, "event_list":event_list, 'venue_list':venue_list, 'users':users, 'event_form':event_form, 'venue_form':venue_form})
+
+def delete_user(request, user_id):
+	user = User.objects.get(pk=user_id)
+
+	if request.user.is_superuser:
+		user.delete()
+		return redirect('admin_approval')
+	else:
+		messages.error(request, "You are not authorized to delete this user")
+		return redirect('home')
 
 def event_form_view(request, event_id):
 	# Assuming the user is authenticated

@@ -67,8 +67,8 @@
 	        display: flex; /* Use flexbox */
 	        flex-wrap: wrap; /* Allow wrapping if content exceeds width */
 	        gap: 50px; /* Gap between count boxes */
-	        padding-top: 10px;
 	        padding-left: 50px;
+	        padding-bottom: 10px;
 	    }
 
 	    .count-box {
@@ -110,6 +110,35 @@
 		        <div class="count-box">
 		            <h6 class="custom-heading1"><strong>Venues Count</strong></h6> <center>{{ venue_count }}</center>
 		        </div>
+		    </div>
+		    <br>
+			<div style="max-height: 300px; overflow-y: auto;"> <!-- Adjust max-height as needed -->
+		        <table class="table table-hover">
+		            <thead>
+		                <tr>
+		                    <th>Username</th>
+		                    <th>First Name</th>
+		                    <th>Last Name</th>
+		                    <th>Email</th>
+		                    <th>Action</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                {% for user in users %}
+		                {% if not user.is_superuser %}
+		                <tr>
+		                    <td>{{ user.username }}</td>
+		                    <td>{{ user.first_name }}</td>
+		                    <td>{{ user.last_name }}</td>
+		                    <td>{{ user.email }}</td>
+		                    <td>
+		                        <a href="{% url 'delete_user' user.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+		                    </td>
+		                </tr>
+		                {% endif %}
+		                {% endfor %}
+		            </tbody>
+		        </table>
 		    </div>
 	    </div>
 	    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
@@ -168,33 +197,35 @@
 				    });
 				</script>
 
-			    <table class="table">
-			        <thead>
-			            <tr>
-			                <th>Event</th>
-			                <th>Venue</th>
-			                <th>Date</th>
-			                <th>Website</th>
-			                <th>Host</th>
-			                <th>Actions</th>
-			            </tr>
-			        </thead>
-			        <tbody>
-			            {% for event in event_list %}
-			            <tr>
-			                <td>{{ event }}</td>
-			                <td>{{ event.venue }}</td>
-			                <td>{{ event.event_date }}</td>
-			                <td>{{ event.venue.web }}</td>
-			                <td>{{ event.manager }}</td>
-			                <td>
-			                	<a href="#" class="btn btn-outline-secondary btn-sm btn-update-event" data-bs-toggle="modal" data-bs-target="#exampleModal" data-event-id="{{ event.id }}">Update</a>
-			                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-			                </td>
-			            </tr>
-			            {% endfor %}
-			        </tbody>
-			    </table>
+				<div style="max-height: 500px; overflow-y: auto;"> <!-- Adjust max-height as needed -->
+				    <table class="table table-hover">
+				        <thead>
+				            <tr>
+				                <th>Event</th>
+				                <th>Venue</th>
+				                <th>Date</th>
+				                <th>Website</th>
+				                <th>Host</th>
+				                <th>Actions</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            {% for event in event_list %}
+				            <tr>
+				                <td>{{ event }}</td>
+				                <td>{{ event.venue }}</td>
+				                <td>{{ event.event_date }}</td>
+				                <td>{{ event.venue.web }}</td>
+				                <td>{{ event.manager }}</td>
+				                <td>
+				                	<a href="#" class="btn btn-outline-secondary btn-sm btn-update-event" data-bs-toggle="modal" data-bs-target="#exampleModal" data-event-id="{{ event.id }}">Update</a>
+				                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+				                </td>
+				            </tr>
+				            {% endfor %}
+				        </tbody>
+				    </table>
+				</div>
 			{% endif %}
 	    </div>
 	    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
@@ -253,36 +284,38 @@
 				});
 				</script>
 
-	    		<table class="table">
-				    <thead>
-				        <tr>
-				            <th>Venue</th>
-				            <th>Address</th>
-				            <th>Zip Code</th>
-				            <th>Phone</th>
-				            <th>Email</th>
-				            <th>Website</th>
-				            <th>Actions</th>
-				        </tr>
-				    </thead>
-				    <tbody>
-				        {% for venue in venue_list %}
-				        <tr>
-				            <td>{{ venue }}</td>
-				            <td>{{ venue.address }}</td>
-				            <td>{{ venue.zip_code }}</td>
-				            <td>{{ venue.phone }}</td>
-				            <td>{{ venue.email_address }}</td>
-				            <td><a href="{{ venue.web }}">{{ venue.web }}</a></td>
-				            <td>
-				         		<!-- Modal Trigger Button -->
-								<a href="#" class="btn btn-outline-secondary btn-sm btn-update-venue" data-bs-toggle="modal" data-bs-target="#updateVenueModal" data-venue-id="{{ venue.id }}">Update</a>
-								<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
-							</td>
-				        </tr>
-				        {% endfor %}
-				    </tbody>
-				</table>
+				<div style="max-height: 400px; overflow-y: auto;"> <!-- Adjust max-height as needed -->
+		    		<table class="table table-hover">
+					    <thead>
+					        <tr>
+					            <th>Venue</th>
+					            <th>Address</th>
+					            <th>Zip Code</th>
+					            <th>Phone</th>
+					            <th>Email</th>
+					            <th>Website</th>
+					            <th>Actions</th>
+					        </tr>
+					    </thead>
+					    <tbody>
+					        {% for venue in venue_list %}
+					        <tr>
+					            <td>{{ venue }}</td>
+					            <td>{{ venue.address }}</td>
+					            <td>{{ venue.zip_code }}</td>
+					            <td>{{ venue.phone }}</td>
+					            <td>{{ venue.email_address }}</td>
+					            <td><a href="{{ venue.web }}">{{ venue.web }}</a></td>
+					            <td>
+					         		<!-- Modal Trigger Button -->
+									<a href="#" class="btn btn-outline-secondary btn-sm btn-update-venue" data-bs-toggle="modal" data-bs-target="#updateVenueModal" data-venue-id="{{ venue.id }}">Update</a>
+									<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+								</td>
+					        </tr>
+					        {% endfor %}
+					    </tbody>
+					</table>
+				</div>
 	    	{% endif %}
 	    </div>
 	  </div>

@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin_approval', views.admin_approval, name='admin_approval'),
     path('get_event_details/', views.get_event_details, name='get_event_details'),
     path('get_venue_details/', views.get_venue_details, name='get_venue_details'),
+    path('delete_user/<user_id>', views.delete_user, name='delete_user'),
 ]
