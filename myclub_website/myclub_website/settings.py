@@ -123,6 +123,8 @@ DEFAULT_FROM_EMAIL = "myclub"
 EMAIL_HOST_USER = os.environ.get("AA_EMAIL_HOST_USER")  # Enter your Gmail address
 EMAIL_HOST_PASSWORD = os.environ.get("AA_EMAIL_HOST_PASSWORD")      # Enter your Gmail password
 
+PASSWORD_RESET_EMAIL_TEMPLATE = 'authenticate/password_reset_email.html'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
