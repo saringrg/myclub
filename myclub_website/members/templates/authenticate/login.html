@@ -4,7 +4,7 @@
     <style>        
         .form-container {
             max-width: 500px;
-            margin-top: 70px; /* Adjust top margin as needed */
+            margin-top: 50px; /* Adjust top margin as needed */
             margin-left: 20px; /* Adjust left margin to move the form to the left */
             padding: 20px;
         }
@@ -70,9 +70,17 @@
             <input type="submit" value="Log in" class="btn btn-secondary">
         </form>
 
-        <br><hr>
+        <br>
+
         <div class="signup-link">
-            <p>Don't have an account? <a href="{% url 'register_user' %}">Sign Up</a></p>
+            <a href="{% url 'forgot_password' %}" style="text-decoration: none;">Forgot Password?</a>
+        </div>
+
+        <hr>
+        <div class="signup-link">
+            <p>Don't have an account? <a href="{% url 'register_user' %}" style="text-decoration: none;">Sign Up</a></p>
         </div>
     </div>
+
+    <br>
 {% endblock %}
