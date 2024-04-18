@@ -14,6 +14,11 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 
+import hmac
+import hashlib
+import base64
+import uuid
+
 
 def get_event_details(request):
 	event_id = request.GET.get('event_id')
@@ -277,10 +282,33 @@ def show_venue(request, venue_id):
 		{'venue': venue,
 		'venue_owner': venue_owner}) 
 
+def genSha256(key, message):
+	key = key.encode('utf-8')
+	message = message.encode('utf-8')
+
+	hmac_sha256 = hmac.new(key, message, hashlib.sha256)
+	digest = hmac_sha256.digest()
+
+	# Convert the digest to a Base64-encoded string
+	signature = base64.b64encode(digest).decode('utf-8')
+
+	return signature
+
 def show_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
-	return render(request, 'events/show_event.html', {'event': event})
 
+	# Generate UUID
+	uuid_val = uuid.uuid4()
+
+	# Example usage:
+	secret_key = "8gBm/:&EnhH.1/q"
+	data_to_sign = f"total_amount={event.registration_fee},transaction_uuid={uuid_val},product_code=EPAYTEST"
+
+	# Generate signature
+	signature = genSha256(secret_key, data_to_sign)
+
+	return render(request, 'events/show_event.html', {'event': event, 'signature': signature, 'transaction_uuid': uuid_val})
+    
 def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
 
