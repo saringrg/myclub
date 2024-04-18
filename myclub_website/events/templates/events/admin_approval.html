@@ -182,7 +182,7 @@
 				                    // Populate form fields with event details
 				                    $('#exampleModal').find('#id_name').val(response.name);
 				                    $('#exampleModal').find('#id_event_date').val(response.event_date);
-				                    $('#exampleModal').find('#id_venue').val(response.venue);
+				                    $('#exampleModal').find('#id_registration_fee').val(response.registration_fee);
 				                    $('#exampleModal').find('#id_description').val(response.description);
 
 				                    // Update the hidden input field with the event ID
@@ -203,9 +203,10 @@
 				            <tr>
 				                <th>Event</th>
 				                <th>Venue</th>
-				                <th>Date</th>
 				                <th>Website</th>
+				                <th>Date</th>
 				                <th>Host</th>
+				                <th>Event Fee</th>
 				                <th>Actions</th>
 				            </tr>
 				        </thead>
@@ -213,10 +214,11 @@
 				            {% for event in event_list %}
 				            <tr>
 				                <td>{{ event }}</td>
-				                <td>{{ event.venue }}</td>
-				                <td>{{ event.event_date }}</td>
+				                <td>{{ event.venue.name }}</td>
 				                <td>{{ event.venue.web }}</td>
+				                <td>{{ event.event_date }}</td>
 				                <td>{{ event.manager }}</td>
+				                <td>{{ event.registration_fee }}</td>
 				                <td>
 				                	<a href="#" class="btn btn-outline-secondary btn-sm btn-update-event" data-bs-toggle="modal" data-bs-target="#exampleModal" data-event-id="{{ event.id }}">Update</a>
 				                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>

@@ -7,6 +7,7 @@ class EventRegistrationForm(forms.Form):
 	event_name = forms.CharField(label='Event Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 	event_date = forms.DateField(label='Event Date', widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'readonly': True}))
 	venue = forms.CharField(label='Venue', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+	registration_fee = forms.IntegerField(label='Registration Fee', widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': True}))
 	first_name = forms.CharField(label='First Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 	last_name = forms.CharField(label='Last Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 	email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control', 'readonly': True}))
@@ -20,6 +21,7 @@ class EventRegistrationForm(forms.Form):
 			self.fields['event_name'].initial = event_instance.name
 			self.fields['event_date'].initial = event_instance.event_date
 			self.fields['venue'].initial = event_instance.venue
+			self.fields['registration_fee'].initial = event_instance.registration_fee
 		if user:
 			# If user is authenticated, populate the first name, last name, and email fields
 			self.fields['first_name'].initial = user.first_name
@@ -27,6 +29,7 @@ class EventRegistrationForm(forms.Form):
 			self.fields['email'].initial = user.email
 
 #admin event form
+"""
 class EventFormAdmin(ModelForm):
 	class Meta:
 		model = Event
@@ -48,17 +51,37 @@ class EventFormAdmin(ModelForm):
 			'attendees': forms.SelectMultiple(attrs={'class':'form-select', 'placeholder':'Attendees'}),
 			'description': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Description'}),
 		}
+"""
+
+class EventFormAdmin(ModelForm):
+	class Meta:
+		model = Event
+		fields = ('name', 'event_date', 'registration_fee', 'description')
+		labels = {
+			'name': 'Event Name',
+			'event_date': 'Event Date',
+			'registration_fee': 'Registration Fee',
+			'description': 'Event Description',
+		}
+
+		widgets = {
+			'name': forms.TextInput(attrs={'class':'form-control'}),
+			'event_date': forms.TextInput(attrs={'class':'form-control', 'placeholder':'YYYY-MM-DD'}),
+			'registration_fee': forms.TextInput(attrs={'class': 'form-control'}),
+			'description': forms.Textarea(attrs={'class':'form-control'}),
+		}
 
 #user event form
 class EventForm(ModelForm):
 	class Meta:
 		model = Event
-		fields = ('name', 'event_date', 'venue', 'description')
+		fields = ('name', 'event_date', 'venue', 'registration_fee', 'description')
 		labels = {
 			'name': 'Event Name',
 			'event_date': 'Event Date',
 			'venue': 'Venue',
 			#'attendees': 'Attendees',
+			'registration_fee': 'Registration Fee',
 			'description': 'Event Description',
 		}
 
@@ -67,6 +90,7 @@ class EventForm(ModelForm):
 			'event_date': forms.TextInput(attrs={'class':'form-control', 'placeholder':'YYYY-MM-DD'}),
 			'venue': forms.Select(attrs={'class':'form-select'}),
 			#'attendees': forms.SelectMultiple(attrs={'class':'form-select'}),
+			'registration_fee': forms.TextInput(attrs={'class': 'form-control'}),
 			'description': forms.Textarea(attrs={'class':'form-control'}),
 		}
 		

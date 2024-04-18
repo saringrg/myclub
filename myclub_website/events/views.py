@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 from django.http import HttpResponseRedirect
 from .models import Event, Venue
 from django.contrib.auth.models import User
-from .forms import VenueForm, EventForm, EventRegistrationForm, VenueFormAdmin
+from .forms import VenueForm, EventForm, EventRegistrationForm, VenueFormAdmin, EventFormAdmin
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -21,7 +21,7 @@ def get_event_details(request):
 	data = {
 		'name': event.name,
 		'event_date': event.event_date,
-		'venue': event.venue.name,  # Assuming venue is related to Event model
+		'registration_fee': event.registration_fee,  # Assuming venue is related to Event model
 		'description': event.description  # Assuming manager is related to User model
 	}
 	return JsonResponse(data)
@@ -42,12 +42,12 @@ def get_venue_details(request):
 
 def admin_approval(request):
 	if request.method == 'POST':
-		event_form = EventForm(request.POST)
+		event_form = EventFormAdmin(request.POST)
 		venue_form = VenueFormAdmin(request.POST)
 		if event_form.is_valid():
 			event_id = request.POST.get('event_id')
 			event = get_object_or_404(Event, pk=event_id)
-			event_form = EventForm(request.POST, instance=event)
+			event_form = EventFormAdmin(request.POST, instance=event)
 			if event_form.is_valid():
 				event_form.save()
 				return redirect('admin_approval')
@@ -59,7 +59,7 @@ def admin_approval(request):
 				venue_form.save()
 				return redirect('admin_approval')
 	else: 
-		event_form = EventForm()
+		event_form = EventFormAdmin()
 		venue_form = VenueFormAdmin()
 
 	event_count = Event.objects.all().count()

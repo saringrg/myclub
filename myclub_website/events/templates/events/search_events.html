@@ -49,6 +49,10 @@
                                             <li>Event Host: {{ event.manager }}</li>
                                         {% endif %}
 
+                                        {% if event.registration_fee %}
+                                            <li>Registration Fee: {{ event.registration_fee }}</li>
+                                        {% endif %}
+
                                         {% if event.description %}
                                             <li>Description: {{ event.description|linebreaksbr|truncatechars:50 }}</li>
                                         {% endif %}
