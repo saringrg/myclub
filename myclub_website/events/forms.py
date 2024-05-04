@@ -2,6 +2,9 @@ from django import forms
 from django.forms import ModelForm
 from .models import Venue, Event
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+
 
 class EventRegistrationForm(forms.Form):
 	event_name = forms.CharField(label='Event Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
@@ -71,6 +74,18 @@ class EventFormAdmin(ModelForm):
 			'description': forms.Textarea(attrs={'class':'form-control'}),
 		}
 
+	def clean_registration_fee(self):
+		registration_fee = self.cleaned_data['registration_fee']
+		if registration_fee < 0:
+			raise forms.ValidationError("Registration fee cannot be negative")
+		return registration_fee
+
+	def clean_venue(self):
+		venue = self.cleaned_data.get('venue')
+		if not venue:
+			raise forms.ValidationError("Please select a venue")
+		return venue
+
 #user event form
 class EventForm(ModelForm):
 	class Meta:
@@ -93,6 +108,18 @@ class EventForm(ModelForm):
 			'registration_fee': forms.TextInput(attrs={'class': 'form-control'}),
 			'description': forms.Textarea(attrs={'class':'form-control'}),
 		}
+
+	def clean_registration_fee(self):
+		registration_fee = self.cleaned_data['registration_fee']
+		if registration_fee < 0:
+			raise forms.ValidationError("Registration fee cannot be negative")
+		return registration_fee
+
+	def clean_venue(self):
+		venue = self.cleaned_data.get('venue')
+		if not venue:
+			raise forms.ValidationError("Please select a venue")
+		return venue
 		
 #create a venue form
 class VenueForm(ModelForm):

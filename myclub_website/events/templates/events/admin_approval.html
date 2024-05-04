@@ -132,7 +132,7 @@
 		                    <td>{{ user.last_name }}</td>
 		                    <td>{{ user.email }}</td>
 		                    <td>
-		                        <a href="{% url 'delete_user' user.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+		                        <a href="{% url 'delete_user' user.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i></a>
 		                    </td>
 		                </tr>
 		                {% endif %}
@@ -206,7 +206,7 @@
 				                <th>Website</th>
 				                <th>Date</th>
 				                <th>Host</th>
-				                <th>Event Fee</th>
+				                <th>Fee</th>
 				                <th>Actions</th>
 				            </tr>
 				        </thead>
@@ -220,8 +220,8 @@
 				                <td>{{ event.manager }}</td>
 				                <td>{{ event.registration_fee }}</td>
 				                <td>
-				                	<a href="#" class="btn btn-outline-secondary btn-sm btn-update-event" data-bs-toggle="modal" data-bs-target="#exampleModal" data-event-id="{{ event.id }}">Update</a>
-				                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+				                	<a href="#" class="btn btn-outline-success btn-sm btn-update-event" data-bs-toggle="modal" data-bs-target="#exampleModal" data-event-id="{{ event.id }}"><i class="bi bi-pencil-square"></i></a>
+				                    <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i></a>
 				                </td>
 				            </tr>
 				            {% endfor %}
@@ -292,7 +292,7 @@
 					        <tr>
 					            <th>Venue</th>
 					            <th>Address</th>
-					            <th>Zip Code</th>
+					            <th>Zip</th>
 					            <th>Phone</th>
 					            <th>Email</th>
 					            <th>Website</th>
@@ -310,8 +310,8 @@
 					            <td><a href="{{ venue.web }}">{{ venue.web }}</a></td>
 					            <td>
 					         		<!-- Modal Trigger Button -->
-									<a href="#" class="btn btn-outline-secondary btn-sm btn-update-venue" data-bs-toggle="modal" data-bs-target="#updateVenueModal" data-venue-id="{{ venue.id }}">Update</a>
-									<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+									<a href="#" class="btn btn-outline-success btn-sm btn-update-venue" data-bs-toggle="modal" data-bs-target="#updateVenueModal" data-venue-id="{{ venue.id }}"><i class="bi bi-pencil-square"></i></a>
+									<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i></a>
 								</td>
 					        </tr>
 					        {% endfor %}

@@ -1,16 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 class Venue(models.Model):
 	name = models.CharField('Venue Name', max_length=120)
 	address = models.CharField(max_length=300)
 	zip_code = models.CharField('Zip Code', max_length=15)
-	phone = models.CharField('Contact Phone', max_length=25, blank=True) 
-	web = models.URLField('Website Address', blank=True)
-	email_address = models.EmailField('Email Address', blank=True)
+	phone_regex = RegexValidator(regex=r'^\d{10}$', message="Phone number must be exactly 10 digits.")
+	phone = models.CharField('Contact Phone', max_length=10, validators=[phone_regex]) 
+	web = models.URLField('Website Address', blank=False)
+	email_address = models.EmailField('Email Address', blank=False)
 	owner = models.IntegerField("Venue Owner", blank=False, default=1)
-	venue_description = models.TextField(blank=True)
+	venue_description = models.TextField(blank=False)
 	venue_image = models.ImageField(null=True, blank=True, upload_to="images/")
 
 	def __str__(self):
@@ -35,18 +38,25 @@ class Event(models.Model):
 	#venue = models.CharField(max_length=120)
 	#manager = models.CharField(max_length=60)
 	manager = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
-	description = models.TextField(blank=True)
-	attendees = models.ManyToManyField(MyClubUser, blank=True)
-	registration_fee = models.IntegerField('Registration Fee', default=0)
+	description = models.TextField(blank=False)
+	#attendees = models.ManyToManyField(MyClubUser, blank=True)
+	registration_fee = models.IntegerField('Registration Fee', blank=False)
 
 
 	def __str__(self):
 		return self.name
 
+	def clean(self):
+		# Check if there's already an event for the same venue and date
+		if Event.objects.filter(venue=self.venue, event_date=self.event_date).exclude(pk=self.pk).exists():
+			raise ValidationError('Sorry! An event for this venue on this date already exists.')
+
 	@property
 	def Days_till(self):
 		today = date.today()
-		if self.event_date < today:
+		if self.event_date == today:
+			return "Today"
+		elif self.event_date < today:
 			return "Registration Closed"
 		else:
 			days_till = self.event_date - today

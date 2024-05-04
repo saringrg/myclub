@@ -13,6 +13,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.db.models import Q
 
 import hmac
 import hashlib
@@ -132,11 +133,12 @@ def event_form_view(request, event_id):
 	else:
 		return redirect('login')
 
+
 def my_venues(request):
-	venue_list = Venue.objects.all().order_by('name')
+	venue_list = Venue.objects.all()
 
 	#set up pagination
-	p = Paginator(Venue.objects.all(), 5)
+	p = Paginator(Venue.objects.all(), 10)
 	page = request.GET.get('page')
 	venues = p.get_page(page)
 	nums = "a" * venues.paginator.num_pages
@@ -259,21 +261,23 @@ def update_venue(request, venue_id):
 
 def search_venues(request):
 	if request.method == "POST":
-		searched = request.POST['searched']
-		venues = Venue.objects.filter(name__contains=searched)
+		searched = request.POST.get('searched', '')
+		# Search in both name and address fields
+		venues = Venue.objects.filter(Q(name__icontains=searched) | Q(address__icontains=searched))
 
-		return render(request, 'events/search_venues.html', {'searched':searched, 'venues':venues}) 
+		return render(request, 'events/search_venues.html', {'searched': searched, 'venues': venues}) 
 	else:
-		return render(request, 'events/search_venues.html', {}) 
+		return render(request, 'events/search_venues.html', {})
 
 def search_events(request):
 	if request.method == "POST":
-		searched = request.POST['searched']
-		events = Event.objects.filter(description__contains=searched)
+		searched = request.POST.get('searched', '')
+		# Search in name, venue, and description fields
+		events = Event.objects.filter(Q(name__icontains=searched) | Q(venue__name__icontains=searched) | Q(description__icontains=searched))
 
-		return render(request, 'events/search_events.html', {'searched':searched, 'events':events}) 
+		return render(request, 'events/search_events.html', {'searched': searched, 'events': events}) 
 	else:
-		return render(request, 'events/search_events.html', {}) 
+		return render(request, 'events/search_events.html', {})
 
 def show_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
@@ -298,7 +302,7 @@ def show_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
 
 	# Generate UUID
-	uuid_val = uuid.uuid4()
+	uuid_val = uuid.uuid4() 
 
 	# Example usage:
 	secret_key = "8gBm/:&EnhH.1/q"
@@ -308,12 +312,18 @@ def show_event(request, event_id):
 	signature = genSha256(secret_key, data_to_sign)
 
 	return render(request, 'events/show_event.html', {'event': event, 'signature': signature, 'transaction_uuid': uuid_val})
-    
+
+""" 
+def show_event(request, event_id):
+	event = get_object_or_404(Event, pk=event_id)
+	return render(request, 'events/show_event.html', {'event': event})
+"""
+
 def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')
 
 	#set up pagination
-	p = Paginator(Venue.objects.all(), 7)
+	p = Paginator(Venue.objects.all(), 6)
 	page = request.GET.get('page')
 	venues = p.get_page(page)
 	nums = "a" * venues.paginator.num_pages
@@ -343,7 +353,7 @@ def all_events(request):
 	event_list = Event.objects.all().order_by('-event_date')
 
 	#set up pagination
-	p = Paginator(Event.objects.all(), 9)
+	p = Paginator(Event.objects.all(), 6)
 	page = request.GET.get('page')
 	events = p.get_page(page)
 	nums = "a" * events.paginator.num_pages
