@@ -1,11 +1,49 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Venue, Event
+from .models import Venue, Event, MyClubUser
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
 
+class EventRegistrationForm(ModelForm):
+	first_name = forms.CharField(label='First Name', max_length=30, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+	last_name = forms.CharField(label='Last Name', max_length=30, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+	email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+	event_name = forms.CharField(label='Event Name', required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+	event_venue = forms.CharField(label='Venue', required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+	event_date = forms.DateField(label='Event Date', required=False, widget=forms.DateInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+	registration_fee = forms.IntegerField(label='Registration Fee', required=False, widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly'}))
+
+	class Meta:
+		model = MyClubUser
+		fields = []
+
+	def __init__(self, *args, **kwargs):
+		self.user = kwargs.pop('user', None)
+		self.event = kwargs.pop('event', None)
+		super(EventRegistrationForm, self).__init__(*args, **kwargs)
+
+		if self.user:
+			self.fields['first_name'].initial = self.user.first_name
+			self.fields['last_name'].initial = self.user.last_name
+			self.fields['email'].initial = self.user.email
+
+		if self.event:
+			self.fields['event_name'].initial = self.event.name
+			self.fields['event_venue'].initial = self.event.venue.name
+			self.fields['event_date'].initial = self.event.event_date
+			self.fields['registration_fee'].initial = self.event.registration_fee
+
+	def clean(self):
+		cleaned_data = super().clean()
+
+		if MyClubUser.objects.filter(user=self.user, event=self.event).exists():
+			raise forms.ValidationError("You are already registered for this event.")
+
+		return cleaned_data
+
+"""
 class EventRegistrationForm(forms.Form):
 	event_name = forms.CharField(label='Event Name', widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
 	event_date = forms.DateField(label='Event Date', widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'readonly': True}))
@@ -30,6 +68,7 @@ class EventRegistrationForm(forms.Form):
 			self.fields['first_name'].initial = user.first_name
 			self.fields['last_name'].initial = user.last_name
 			self.fields['email'].initial = user.email
+"""
 
 #admin event form
 """
@@ -105,7 +144,7 @@ class EventForm(ModelForm):
 			'event_date': forms.TextInput(attrs={'class':'form-control', 'placeholder':'YYYY-MM-DD'}),
 			'venue': forms.Select(attrs={'class':'form-select'}),
 			#'attendees': forms.SelectMultiple(attrs={'class':'form-select'}),
-			'registration_fee': forms.TextInput(attrs={'class': 'form-control'}),
+			'registration_fee': forms.NumberInput(attrs={'class': 'form-control'}),
 			'description': forms.Textarea(attrs={'class':'form-control'}),
 		}
 
@@ -125,7 +164,7 @@ class EventForm(ModelForm):
 class VenueForm(ModelForm):
 	class Meta:
 		model = Venue
-		fields = ('name', 'address', 'zip_code', 'phone', 'web', 'email_address', 'venue_description', 'venue_image')
+		fields = ('name', 'address', 'zip_code', 'phone', 'web', 'email_address', 'venue_description', 'venue_image', 'capacity')
 		labels = {
 			'name': 'Venue Name',
 			'address': 'Venue Address',
@@ -135,6 +174,7 @@ class VenueForm(ModelForm):
 			'email_address': 'Email',
 			'venue_description': 'Venue Description',
 			'venue_image': 'Venue Image',
+			'capacity': 'capacity',
 		}
 
 		widgets = {
@@ -146,6 +186,7 @@ class VenueForm(ModelForm):
 			'email_address': forms.EmailInput(attrs={'class':'form-control'}),
 			'venue_description': forms.Textarea(attrs={'class':'form-control'}),
 			'venue_image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+			'capacity': forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
 #create a venue form

@@ -1,10 +1,18 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
-
 	<nav class="custom-nav">
-		<div>
-			<h4>My Events</h4>
+		<div style="display: flex;">
+			<a href="{% url 'my_events' %}" style="text-decoration: none; color: black;">
+			    <h5 onmouseover="this.style.color='#f05537'" onmouseout="this.style.color='black'">My Events</h5>
+			</a> 
+			
+			<span style="margin-left: 5px; margin-right: 5px;">|</span>
+
+			<a href="{% url 'joined_events_list' %}" style="text-decoration: none; color: black;">
+				<h5 onmouseover="this.style.color='#f05537'" onmouseout="this.style.color='black'">Joined Events</h5>
+			</a>
+
 		</div>
 		<div>
 			<a class="d-flex" href="{% url 'add-event' %}" style="text-decoration: none;">

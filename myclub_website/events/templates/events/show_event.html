@@ -9,7 +9,12 @@
 			<h3>{{ event }}</h3>
 		</div>
 		{% if user.is_authenticated %}
-			<form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+			<div>
+				<a class="d-flex" href="{% url 'register_for_event' event.id %}" style="text-decoration: none;">
+		          	<button class="btn btn-sm btn-custom">Join Event</button>
+		        </a>	
+			</div>
+			<!--<form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
 		        <input type="hidden" id="amount" name="amount" value="{{ event.registration_fee }}" required>
 		        <input type="hidden" id="tax_amount" name="tax_amount" value ="0" required>
 		        <input type="hidden" id="total_amount" name="total_amount" value="{{ event.registration_fee }}" required>
@@ -22,7 +27,7 @@
 		        <input type="hidden" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
 		        <input type="hidden" id="signature" name="signature" value="{{ signature }}" required>
 		        <input class="btn btn-sm btn-custom" value="Join Event" type="submit">
-		    </form>
+		    </form>-->
 		{% else %}
 			<div>
 				<a class="d-flex" href="{% url 'login' %}" style="text-decoration: none;">
@@ -105,6 +110,10 @@
 
 		        {% if event.venue.web %}
 		            <li class="list-group-item"><strong>Website:</strong> <a href="{{ event.venue.web }}" target="_blank" style="text-decoration: none;">{{ event.venue.web }}</a></li>
+		        {% endif %}
+
+		        {% if event.venue.capacity %}
+		            <li class="list-group-item"><strong>Capacity:</strong> {{ event.venue.capacity }}</li>
 		        {% endif %}
 		        
 		        {% if event.venue_owner %}

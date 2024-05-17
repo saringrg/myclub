@@ -3,7 +3,8 @@ import calendar
 from calendar import HTMLCalendar 
 from datetime import date, datetime, timedelta
 from django.http import HttpResponseRedirect
-from .models import Event, Venue
+from .models import Event, Venue, MyClubUser
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import VenueForm, EventForm, EventRegistrationForm, VenueFormAdmin, EventFormAdmin
 from django.contrib import messages
@@ -12,8 +13,13 @@ from django.conf import settings
 from django.utils.html import format_html
 from django.urls import reverse
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+
 
 import hmac
 import hashlib
@@ -297,7 +303,7 @@ def genSha256(key, message):
 	signature = base64.b64encode(digest).decode('utf-8')
 
 	return signature
-
+"""
 def show_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
 
@@ -317,7 +323,103 @@ def show_event(request, event_id):
 def show_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
 	return render(request, 'events/show_event.html', {'event': event})
-"""
+
+@login_required
+def register_for_event(request, event_id):
+	event = get_object_or_404(Event, pk=event_id)
+
+	# Generate UUID
+	uuid_val = uuid.uuid4() 
+
+	# Example usage:
+	secret_key = "8gBm/:&EnhH.1/q"
+	data_to_sign = f"total_amount={event.registration_fee},transaction_uuid={uuid_val},product_code=EPAYTEST"
+
+	# Generate signature
+	signature = genSha256(secret_key, data_to_sign)
+
+	venue = event.venue
+
+	# Check if the event date has passed
+	if event.event_date < date.today():
+		event_closed = True
+		form = None
+	else:
+		event_closed = False
+		form = EventRegistrationForm(event=event, user=request.user)
+		if request.method == 'POST':
+			form = EventRegistrationForm(request.POST, user=request.user, event=event)
+			if form.is_valid():
+				# Check if the venue capacity has been reached
+				if MyClubUser.objects.filter(event=event).count() >= venue.capacity:
+					messages.error(request, "Registration failed! Sorry, the venue is already full.")
+					return redirect('list-events')
+				else:
+					MyClubUser.objects.create(user=request.user, event=event)
+					messages.success(request, "You have successfully registered for the event.")
+					return redirect('list-events')  # Redirect to a success page or event list
+
+	return render(request, 'events/register_for_event.html', {'form': form, 'event': event, 'event_closed': event_closed, 'signature': signature, 'transaction_uuid': uuid_val})
+
+@login_required
+def joined_events_list(request):
+	# Get the events joined by the current user
+	joined_events = MyClubUser.objects.filter(user=request.user)
+
+	# Set up pagination
+	p = Paginator(joined_events, 6)
+	page = request.GET.get('page')
+	joined_events_paginated = p.get_page(page)
+
+	# Create a dummy string for pagination display
+	nums = "a" * joined_events_paginated.paginator.num_pages
+
+	return render(request, 'events/joined_events_list.html', {'joined_events': joined_events_paginated, 'nums': nums})
+
+@login_required
+def generate_joined_event_pdf(request, event_id):
+	# Get the joined event for the current user by event ID
+	joined_event = get_object_or_404(MyClubUser, user=request.user, event_id=event_id)
+
+	# Create PDF
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = f'attachment; filename="{joined_event.event.name}_details.pdf"'
+
+	# Create canvas
+	p = canvas.Canvas(response, pagesize=letter)
+	width, height = letter
+
+	# Define the box dimensions
+	box_top = height - 100
+	box_left = 80
+	box_right = width - 80
+	box_bottom = box_top - 180  # Increased height to accommodate title and intro text
+
+	# Draw box for event details
+	p.rect(box_left, box_bottom, box_right - box_left, box_top - box_bottom)
+
+	# Add title inside the box
+	p.setFont('Helvetica-Bold', 20)
+	p.drawString(box_left + 10, box_top - 30, "Social Club Management")
+
+	# Add introductory text inside the box
+	p.setFont('Helvetica', 12)
+	p.drawString(box_left + 10, box_top - 60, "You have registered for the event:")
+
+	# Write event details inside the box
+	y = box_top - 90  # Adjusted position to fit below the introductory text
+	x = box_left + 10
+	event = joined_event.event
+	p.setFont('Helvetica', 12)
+	p.drawString(x, y, f"Event Name: {event.name}")
+	p.drawString(x, y - 20, f"Event Date: {event.event_date}")
+	p.drawString(x, y - 40, f"Venue: {event.venue}")
+	p.drawString(x, y - 60, f"Manager: {event.manager}")
+
+	p.showPage()
+	p.save()
+
+	return response
 
 def list_venues(request):
 	venue_list = Venue.objects.all().order_by('name')

@@ -39,6 +39,10 @@
 		        {% if venue.web %}
 		            <li class="list-group-item"><strong>Website:</strong> <a href="{{ venue.web }}" target="_blank" style="text-decoration: none;">{{ venue.web }}</a></li>
 		        {% endif %}
+
+		        {% if venue.capacity %}
+		            <li class="list-group-item"><strong>Capacity:</strong> {{ venue.capacity }}</li>
+		        {% endif %}
 		        
 		        {% if venue_owner %}
 		            <li class="list-group-item"><strong>Owner:</strong> {{ venue_owner }}</li>

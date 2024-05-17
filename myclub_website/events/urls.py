@@ -25,4 +25,7 @@ urlpatterns = [
     path('get_event_details/', views.get_event_details, name='get_event_details'),
     path('get_venue_details/', views.get_venue_details, name='get_venue_details'),
     path('delete_user/<user_id>', views.delete_user, name='delete_user'),
+    path('event/register/<int:event_id>/', views.register_for_event, name='register_for_event'),
+    path('events/joined/', views.joined_events_list, name='joined_events_list'),
+    path('generate-pdf/<int:event_id>/', views.generate_joined_event_pdf, name='generate_pdf'),
 ]
