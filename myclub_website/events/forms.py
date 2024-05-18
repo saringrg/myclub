@@ -189,6 +189,12 @@ class VenueForm(ModelForm):
 			'capacity': forms.NumberInput(attrs={'class': 'form-control'}),
 		}
 
+	def clean_capacity(self):
+		capacity = self.cleaned_data.get('capacity')
+		if capacity is not None and capacity < 0:
+			raise ValidationError("Capacity cannot be negative")
+		return capacity
+
 #create a venue form
 class VenueFormAdmin(ModelForm):
 	class Meta:

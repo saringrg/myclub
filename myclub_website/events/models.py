@@ -15,7 +15,7 @@ class Venue(models.Model):
 	owner = models.IntegerField("Venue Owner", blank=False, default=1)
 	venue_description = models.TextField(blank=False)
 	venue_image = models.ImageField(null=True, blank=True, upload_to="images/")
-	capacity = models.IntegerField("Capacity", blank=False, default=0)
+	capacity = models.IntegerField("Capacity", blank=False)
 
 	def __str__(self):
 		return self.name

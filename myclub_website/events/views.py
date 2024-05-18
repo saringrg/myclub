@@ -13,14 +13,14 @@ from django.conf import settings
 from django.utils.html import format_html
 from django.urls import reverse
 from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.db.models import Q
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
-
+from django.views.decorators.csrf import csrf_exempt
 import hmac
 import hashlib
 import base64
@@ -292,17 +292,6 @@ def show_venue(request, venue_id):
 		{'venue': venue,
 		'venue_owner': venue_owner}) 
 
-def genSha256(key, message):
-	key = key.encode('utf-8')
-	message = message.encode('utf-8')
-
-	hmac_sha256 = hmac.new(key, message, hashlib.sha256)
-	digest = hmac_sha256.digest()
-
-	# Convert the digest to a Base64-encoded string
-	signature = base64.b64encode(digest).decode('utf-8')
-
-	return signature
 """
 def show_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
@@ -319,12 +308,25 @@ def show_event(request, event_id):
 
 	return render(request, 'events/show_event.html', {'event': event, 'signature': signature, 'transaction_uuid': uuid_val})
 
-""" 
+"""
+
 def show_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
 	return render(request, 'events/show_event.html', {'event': event})
 
-@login_required
+def genSha256(key, message):
+	key = key.encode('utf-8')
+	message = message.encode('utf-8')
+
+	hmac_sha256 = hmac.new(key, message, hashlib.sha256)
+	digest = hmac_sha256.digest()
+
+	# Convert the digest to a Base64-encoded string
+	signature = base64.b64encode(digest).decode('utf-8')
+
+	return signature
+
+"""@login_required
 def register_for_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
 
@@ -360,6 +362,75 @@ def register_for_event(request, event_id):
 					return redirect('list-events')  # Redirect to a success page or event list
 
 	return render(request, 'events/register_for_event.html', {'form': form, 'event': event, 'event_closed': event_closed, 'signature': signature, 'transaction_uuid': uuid_val})
+"""
+
+@login_required
+def register_for_event(request, event_id):
+	event = get_object_or_404(Event, pk=event_id)
+
+	# Generate UUID
+	uuid_val = uuid.uuid4() 
+
+	# Example usage:
+	secret_key = "8gBm/:&EnhH.1/q"
+	data_to_sign = f"total_amount={event.registration_fee},transaction_uuid={uuid_val},product_code=EPAYTEST"
+
+	# Generate signature
+	signature = genSha256(secret_key, data_to_sign)
+
+	venue = event.venue
+
+	# Check if the event date has passed
+	if event.event_date < date.today():
+		event_closed = True
+		form = None
+	else:
+		event_closed = False
+		form = EventRegistrationForm(event=event, user=request.user)
+		if request.method == 'POST':
+			form = EventRegistrationForm(request.POST, user=request.user, event=event)
+			if form.is_valid():
+				# Check if the venue capacity has been reached
+				if MyClubUser.objects.filter(event=event).count() >= venue.capacity:
+					messages.error(request, "Registration failed! Sorry, the venue is already full.")
+					return redirect('list-events')
+				else:
+					# Instead of creating MyClubUser here, redirect to eSewa for payment
+					return render(request, 'events/esewa_payment_form.html', {
+						'event': event,
+						'form': form,
+						'transaction_uuid': uuid_val,
+						'signature': signature,
+						'event_closed': event_closed
+					})
+
+	return render(request, 'events/register_for_event.html', {'form': form, 'event': event, 'event_closed': event_closed, 'signature': signature, 'transaction_uuid': uuid_val})
+
+@csrf_exempt
+def esewa_payment_success(request):
+	# Handle successful payment
+	event_id = request.GET.get('event_id')
+	transaction_uuid = request.GET.get('transaction_uuid')
+
+	# Register the user for the event
+	event = get_object_or_404(Event, pk=event_id)
+	venue = event.venue
+
+	if MyClubUser.objects.filter(event=event).count() >= venue.capacity:
+		messages.error(request, "Registration failed! Sorry, the venue is already full.")
+	else:
+		MyClubUser.objects.create(user=request.user, event=event)
+		messages.success(request, "You have successfully registered for the event.")
+
+	return redirect('joined_events_list')
+
+@csrf_exempt
+def esewa_payment_failure(request):
+	# Handle payment failure
+	messages.error(request, "Payment failed! Please try again.")
+	return redirect('home')
+
+
 
 @login_required
 def joined_events_list(request):

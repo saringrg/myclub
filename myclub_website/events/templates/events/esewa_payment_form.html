@@ -1,0 +1,49 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block content %}
+    <br><br>
+    <style>
+        .page-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-form-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .image-form-container img {
+            margin-right: 0px; /* Adjust the margin as needed */
+        }
+
+        .pad-but {
+            margin-top: 5px;
+        }
+    </style>
+
+    <div class="image-form-container">
+        <img src="{% static 'events/images/esewa.png' %}" height=89 width=250>
+
+        <form id="esewa-form" action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+            <input type="hidden" name="amount" value="{{ event.registration_fee }}" required>
+            <input type="hidden" name="tax_amount" value="0" required>
+            <input type="hidden" name="total_amount" value="{{ event.registration_fee }}" required>
+            <input type="hidden" name="transaction_uuid" value="{{ transaction_uuid }}" required>
+            <input type="hidden" name="product_code" value="EPAYTEST" required>
+            <input type="hidden" name="product_service_charge" value="0" required>
+            <input type="hidden" name="product_delivery_charge" value="0" required>
+            <input type="hidden" name="success_url" value="http://localhost:8000/events/esewa_payment_success/?event_id={{ event.id }}&transaction_uuid={{ transaction_uuid }}" required>
+            <input type="hidden" name="failure_url" value="http://localhost:8000/events/esewa_payment_failure/?event_id={{ event.id }}" required>
+            <input type="hidden" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
+            <input type="hidden" name="signature" value="{{ signature }}" required>
+            <input class="btn btn-sm pad-but btn-custom" type="submit" value="Proceed to Payment">
+        </form>
+    </div>
+
+    
+    <br><br>
+
+{% endblock %}
