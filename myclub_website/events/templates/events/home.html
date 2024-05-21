@@ -1,56 +1,96 @@
 {% extends 'events/homebase.html' %}
-{% block content %}	
+{% block content %}    
 
-	<h5 class="custom-head">Events for this Month</h5>
-	
-	{% if event_list %}
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-		{% for event in event_list %}
-		  <div class="col">
-		    <div class="card h-100">
-		    {% if event.venue.venue_image %}
-		      <a href="{% url 'show-event' event.id %}"><img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;"></a>
-		    {% endif %}
-		      <div class="card-body">
-		        <h5 class="card-title">{{event}}</h5>
-		        <p class="card-text">
-		        	<ul>
-			    		{% if event.event_date %}
-							<li>Date: {{ event.event_date }} ({{ event.Days_till }})</li>
-						{% endif %}
+    <style>
+        .card {
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            overflow: hidden;
+        }
 
-						{% if event.venue %}
-							<li>Venue: <a href="{% url 'show-venue' event.venue.id %}" style="text-decoration: none;">{{ event.venue }}</a></li>
-						{% endif %}
+        .card:hover {
+            transform: scale(1.02); /* Enlarge the card on hover */
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
 
-						{% if event.venue.web %}
-							<li>Website: {{ event.venue.web }}</li>
-						{% endif %}
+        .card a {
+            color: inherit; /* Inherit the card text color */
+            text-decoration: none; /* Remove underline */
+        }
 
-						{% if event.manager %}
-							<li>Event Host: {{ event.manager }}</li>
-						{% endif %}
+        .card a:hover {
+            text-decoration: none; /* Remove underline on hover */
+        }
 
-						{% if event.registration_fee %}
-							<li>Registration Fee: {{ event.registration_fee }}</li>
-						{% endif %}
+        .card-body {
+            padding: 20px; /* Consistent padding */
+        }
 
-						{% if event.description %}
-							<li>Description: {{ event.description|linebreaksbr|truncatechars:50 }}</li>
-						{% endif %}
-					</ul>
-		        </p>
-		      </div>
-		    </div>
-		  </div> 
-		  {% endfor%}
-		</div>	
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
 
-	
-	{% else %}
-		Sorry! No event for this month
-	
-	{% endif %}
+        .card-text ul {
+            list-style-type: none; /* Remove bullet points from <ul> */
+            padding: 0; /* Remove default padding */
+            margin: 0; /* Remove default margin */
+        }
+
+        .card-text li {
+            margin-bottom: 5px;
+        }
+    </style>
+
+    <h5 class="custom-head">Events for this Month</h5>
+    
+    {% if event_list %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for event in event_list %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if event.venue.venue_image %}
+                            <a href="{% url 'show-event' event.id %}">
+                                <img src="{{ event.venue.venue_image.url }}" class="card-img-top" alt="Venue image" style="height: 250px; width: 100%; object-fit: cover;">
+                            </a>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event }}</h5>
+                            <p class="card-text">
+                                <ul>
+                                    {% if event.event_date %}
+                                        <li>Date: {{ event.event_date }} ({{ event.Days_till }})</li>
+                                    {% endif %}
+
+                                    {% if event.venue %}
+                                        <li>Venue: <a href="{% url 'show-venue' event.venue.id %}" style="text-decoration: none;">{{ event.venue }}</a></li>
+                                    {% endif %}
+
+                                    {% if event.venue.web %}
+                                        <li>Website: {{ event.venue.web }}</li>
+                                    {% endif %}
+
+                                    {% if event.manager %}
+                                        <li>Event Host: {{ event.manager }}</li>
+                                    {% endif %}
+
+                                    {% if event.registration_fee %}
+                                        <li>Registration Fee: {{ event.registration_fee }}</li>
+                                    {% endif %}
+
+                                    {% if event.description %}
+                                        <li>Description: {{ event.description|linebreaksbr|truncatechars:50 }}</li>
+                                    {% endif %}
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div> 
+            {% endfor %}
+        </div>    
+    {% else %}
+        Sorry! No event for this month.
+    {% endif %}
 
 {% endblock %}
-

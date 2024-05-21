@@ -1,144 +1,138 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
-	<nav class="custom-nav">
-		<div style="display: flex;">
-			<a href="{% url 'my_events' %}" style="text-decoration: none; color: black;">
-			    <h5 onmouseover="this.style.color='#f05537'" onmouseout="this.style.color='black'">My Events</h5>
-			</a> 
-			
-			<span style="margin-left: 5px; margin-right: 5px;">|</span>
 
-			<a href="{% url 'joined_events_list' %}" style="text-decoration: none; color: black;">
-				<h5 onmouseover="this.style.color='#f05537'" onmouseout="this.style.color='black'">Joined Events</h5>
-			</a>
+    <style>
+        .custom-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-		</div>
-		<div>
-			<a class="d-flex" href="{% url 'add-event' %}" style="text-decoration: none;">
-	          	<button class="btn btn-sm btn-custom">Create Event</button>
-	        </a>	
-		</div>
-	</nav>
-<!--
-	<nav class="navbar navbar-expand-lg navbar-light bg-white">
-	  
-	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        .custom-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
 
-	        <li class="nav-item">
-	          <a class="nav-link" href="{% url 'my_events' %}"><h4>My Events</h4></a>
-	        </li>
+        .custom-card-header {
+            background-color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
 
-	      </ul>
-	      <a class="d-flex" href="{% url 'add-event' %}" style="text-decoration: none;">
-          	<button class="btn btn-sm btn-custom">Create Event</button>
-          </a>
-	  	</div>
-	</nav>-->
+        .custom-card-body {
+            padding: 15px;
+        }
 
-	<br>
+        .custom-card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
 
-	{% for event in events %}
-		{% if user.is_authenticated %} 
-		  	{% if user == event.manager %}
-				
-				<div class="card">
-				  <div class="card-header d-flex justify-content-between align-items-center">
-				    <h5>{{event}}</h5>
-				    <div>
-				        <a href="{% url 'update-event' event.id %}" class="btn btn-outline-success btn-sm"><i class="bi bi-pencil-square"></i></a> 
-				        <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm me-2"><i class="bi bi-trash3"></i></a> 
-				    </div>
-				  </div>
-				  <div class="card-body">
-				    <h6 class="card-title">Venue: {{ event.venue }}</h6>
-				    <p class="card-text">
-				    	<ul>
-				    		{% if event.event_date %}
-								<li>Date: {{ event.event_date }}</li>
-							{% endif %}
+        .custom-list {
+            padding-left: 20px;
+        }
 
-							{% if event.venue.web %}
-								<li>Website: {{ event.venue.web }}</li>
-							{% endif %}
+        .custom-list li {
+            margin-bottom: 5px;
+        }
+    </style>
 
-							{% if event.manager %}
-								<li>Event Host: {{ event.manager }}</li>
-							{% endif %}
+    <nav class="custom-nav">
+        <div>
+            <h4>Events Created</h4>
+        </div>
+        <div>
+            <a class="d-flex" href="{% url 'add-event' %}" style="text-decoration: none;">
+                <button class="btn btn-sm btn-custom">Create Event</button>
+            </a>    
+        </div>
+    </nav>
 
-							{% if event.registration_fee %}
-								<li>Registration Fee: {{ event.registration_fee }}</li>
-							{% endif %}
+    <br>
 
-							{% if event.description %}
-								<li>Description: {{ event.description }}</li>
-							{% endif %}
-						</ul>
-					</p>
+    {% if not events %}
+        <p>You haven't created any events. Create your event to see it listed here.</p>
+    {% else %}
+        {% for event in events %}                
+            <div class="card custom-card">
+                <div class="card-header custom-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="custom-card-title">{{ event }}</h5>
+                    <div>
+                        <a href="{% url 'update-event' event.id %}" class="btn btn-outline-success btn-sm"><i class="bi bi-pencil-square"></i></a> 
+                        <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm me-2"><i class="bi bi-trash3"></i></a> 
+                    </div>
+                </div>
+                <div class="card-body custom-card-body">
+                    <h6 class="card-title">Venue: {{ event.venue }}</h6>
+                    <p class="card-text">
+                        <ul class="list-unstyled custom-list">
+                            {% if event.event_date %}
+                                <li>Date: {{ event.event_date }}</li>
+                            {% endif %}
 
-							{% if event.attendees.all %}
-								<p>Special Attendees:</p>
-								<ul>
-								{% for user in event.attendees.all %}
-										<li>{{ user }}</li> 
-								{% endfor%}
-								</ul>
-							{% endif %}
-				  </div>
-				
-				  <!--<div class="card-footer text-muted">
-					<a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a> 
-				  	<a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a> 
-				  </div>-->
+                            {% if event.venue.web %}
+                                <li>Website: {{ event.venue.web }}</li>
+                            {% endif %}
 
-				</div>
+                            {% if event.manager %}
+                                <li>Event Host: {{ event.manager }}</li>
+                            {% endif %}
 
-				<br><br>
+                            {% if event.registration_fee %}
+                                <li>Registration Fee: {{ event.registration_fee }}</li>
+                            {% endif %}
 
-		 	{% endif %}
-		{% endif %}
-	{% endfor%}	
+                            {% if event.description %}
+                                <li>Description: {{ event.description }}</li>
+                            {% endif %}
+                        </ul>
+                    </p>
 
-	<br>
-	<hr>
+                    {% if event.attendees.all %}
+                        <p>Special Attendees:</p>
+                        <ul class="list-unstyled custom-list">
+                            {% for user in event.attendees.all %}
+                                <li>{{ user }}</li> 
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
 
-	<nav aria-label="Page navigation example">
-		<ul class="pagination justify-content-center">
-	    
-			{% if events.has_previous %}
-				<li class="page-item">
-					<a class="page-link" href="?page=1">&laquo First</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a>
-				</li>
+            <br><br>
+        {% endfor %}    
+    {% endif %}
 
-			{% endif %}
+    <br>
+    <hr>
 
-			{% for i in nums %}
-				<li class="page-item">
-					<a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
-				</li>
-			{% endfor %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if events.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
 
-			<!--
-			<li class="page-item disabled">
-				<a href="#" class="page-link">Page {{ venues.number }} of {{ venues.paginator.num_pages }}</a>
-			</li>-->
+            {% for i in nums %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                </li>
+            {% endfor %}
 
-			{% if events.has_next %}
-				<li class="page-item">
-					<a class="page-link" href="?page={{ events.next_page_number }}">next</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="?page={{ events.paginator.num_pages }}">Last &raquo</a>
-				</li>	
+            {% if events.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ events.next_page_number }}">next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ events.paginator.num_pages }}">Last &raquo</a>
+                </li>    
+            {% endif %}
+        </ul>
+    </nav>
 
-			{% endif %}
-
-		</ul>
-	</nav>
-	
 {% endblock %}
-

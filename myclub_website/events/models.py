@@ -16,6 +16,7 @@ class Venue(models.Model):
 	venue_description = models.TextField(blank=False)
 	venue_image = models.ImageField(null=True, blank=True, upload_to="images/")
 	capacity = models.IntegerField("Capacity", blank=False)
+	make_public = models.BooleanField("Make Public", default=False)
 
 	def __str__(self):
 		return self.name
@@ -42,6 +43,10 @@ class Event(models.Model):
 		# Check if there's already an event for the same venue and date
 		if Event.objects.filter(venue=self.venue, event_date=self.event_date).exclude(pk=self.pk).exists():
 			raise ValidationError('Sorry! An event for this venue on this date already exists.')
+
+		# Check if the venue is private and the user is not the owner
+		#if self.venue.make_public is False and self.manager.id != self.venue.owner.id:
+		#	raise ValidationError('You are not authorized to create an event for this venue.')
 
 	@property
 	def Days_till(self):

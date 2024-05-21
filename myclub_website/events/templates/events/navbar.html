@@ -41,6 +41,10 @@
   .navbar-brand:hover {
     color: var(--bs-orange) !important;
   }
+
+  .nav-link.active {
+    color: var(--bs-orange) !important;
+  }
   
 </style>
 
@@ -56,30 +60,36 @@
 
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'list-events' %}">Events</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'list-events' %}active{% endif %}" href="{% url 'list-events' %}">Events</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_events' %}">My Event</a>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'my_events' or request.resolver_match.url_name == 'joined_events_list' %}active{% endif %}" href="#" id="myEventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  My Events
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="myEventsDropdown">
+                  <li><a class="dropdown-item {% if request.resolver_match.url_name == my_events %}active{% endif %}" href="{% url 'my_events' %}">Events Created</a></li>
+                  <li><a class="dropdown-item {% if request.resolver_match.url_name == joined_events_list %}active{% endif %}" href="{% url 'joined_events_list' %}">Events Joined</a></li>
+              </ul>
           </li>
 
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'list-events' %}">Events</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'list-events' %}active{% endif %}" href="{% url 'list-events' %}">Events</a>
           </li>
 
         {% endif %}
 
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'list-venues' %}">Venue</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'list-venues' %}active{% endif %}" href="{% url 'list-venues' %}">Venue</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_venues' %}">My Venue</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'my_venues' %}active{% endif %}" href="{% url 'my_venues' %}">My Venue</a>
           </li>
     
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'list-venues' %}">Venue</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'list-venues' %}active{% endif %}" href="{% url 'list-venues' %}">Venue</a>
           </li>
 
         {% endif %}
@@ -93,16 +103,16 @@
         {% if user.is_authenticated %}
 
           <li class="nav-item">
-            <a class="custom-link custom-pad" href="{% url 'logout' %}">Logout</a>
+            <a class="custom-link custom-pad" href="{% url 'logout' %}"><b>Log Out</b></a>
           </li>
 
         {% else %}
           <li class="nav-item">
-            <a class="custom-link" href="{% url 'register_user' %}">Sign up</a>
+            <a class="custom-link" href="{% url 'register_user' %}"><b>Sign Up</b></a>
           </li>
           
           <li class="nav-item">
-            <a class="custom-link custom-pad" href="{% url 'login' %}">Log In</a> 
+            <a class="custom-link custom-pad" href="{% url 'login' %}"><b>Log In</b></a> 
           </li>
           
         {% endif %}

@@ -48,6 +48,7 @@ def get_venue_details(request):
 		'phone': venue.phone,
 		'email_address': venue.email_address,
 		'web': venue.web,
+		'capacity': venue.capacity,
 		'description': venue.venue_description,
 	}
 	return JsonResponse(data)
@@ -141,10 +142,10 @@ def event_form_view(request, event_id):
 
 
 def my_venues(request):
-	venue_list = Venue.objects.all()
+	venue_list = Venue.objects.filter(owner=request.user.id)
 
 	#set up pagination
-	p = Paginator(Venue.objects.all(), 10)
+	p = Paginator(venue_list, 10)
 	page = request.GET.get('page')
 	venues = p.get_page(page)
 	nums = "a" * venues.paginator.num_pages
@@ -153,10 +154,10 @@ def my_venues(request):
 		{'venue_list': venue_list, 'venues': venues, 'nums':nums})
 
 def my_events(request):
-	event_list = Event.objects.all().order_by('-event_date')
+	event_list = Event.objects.filter(manager=request.user).order_by('-event_date')
 
 	#set up pagination
-	p = Paginator(Event.objects.all(), 10)
+	p = Paginator(event_list, 10)
 	page = request.GET.get('page')
 	events = p.get_page(page)
 	nums = "a" * events.paginator.num_pages
@@ -165,8 +166,13 @@ def my_events(request):
 		{'event_list': event_list, 'events': events, 'nums':nums}) 
 
 #delete an venue
-def delete_venue(request, venue_id):
+"""def delete_venue(request, venue_id):
 	venue = Venue.objects.get(pk=venue_id)
+
+	# Check if the venue is used by any event
+	if Event.objects.filter(venue=venue).exists():
+		messages.error(request, "Cannot delete the venue as it is used by one or more events.")
+		return redirect('my_venues')
 	
 	if request.user.is_superuser:
 		venue.delete()
@@ -178,6 +184,61 @@ def delete_venue(request, venue_id):
 	else:
 		messages.success(request, ("You are not authorized to delete this venue"))
 		return redirect('my_venues')
+"""
+def delete_venue(request, venue_id):
+	venue = Venue.objects.get(pk=venue_id)
+	today = date.today()
+
+	# Check if the venue is used by any upcoming event
+	upcoming_events = Event.objects.filter(venue=venue, event_date__gte=today)
+
+	if upcoming_events.exists():
+		if request.user.is_superuser:
+			messages.error(request, "Cannot delete the venue as it is used by one or more upcoming events.")
+			return redirect('admin_approval')
+		elif request.user.id == venue.owner:
+			messages.error(request, "Cannot delete the venue as it is used by one or more upcoming events.")
+			return redirect('my_venues')
+		else:
+			messages.error(request, "You are not authorized to delete this venue")
+			return redirect('my_venues')
+	else:
+		if request.user.is_superuser:
+			venue.delete()
+			messages.success(request, "Venue has been deleted")
+			return redirect('admin_approval')
+		elif request.user.id == venue.owner:
+			venue.delete()
+			messages.success(request, "Your venue has been deleted")
+			return redirect('my_venues')
+		else:
+			messages.error(request, "You are not authorized to delete this venue")
+			return redirect('my_venues')
+
+def delete_event(request, event_id):
+	event = Event.objects.get(pk=event_id)
+
+	# Check if the event has any attendees
+	if MyClubUser.objects.filter(event=event).exists():
+		if request.user.is_superuser:
+			return redirect('admin_approval')
+		elif request.user == event.manager:
+			messages.error(request, "Cannot delete the event as it has registered attendees.")
+			return redirect('my_events')
+		else:
+			messages.error(request, "You are not authorized to delete this event")
+			return redirect('my_events')
+	else:
+		if request.user.is_superuser:
+			event.delete()
+			return redirect('admin_approval')  # Redirect to admin_approval page for superuser
+		elif request.user == event.manager:
+			event.delete()
+			messages.success(request, "Your event has been deleted")
+			return redirect('my_events')
+		else:
+			messages.error(request, "You are not authorized to delete this event")
+			return redirect('my_events')
 
 #delete an event
 """def delete_event(request, event_id):
@@ -190,8 +251,14 @@ def delete_venue(request, venue_id):
 		messages.success(request, ("You are not authorized to delete this event"))
 		return redirect('my_events')"""
 
+"""@login_required
 def delete_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
+
+	# Check if the event has any attendees
+	if MyClubUser.objects.filter(event=event).exists():
+		messages.error(request, "Cannot delete the event as it has registered attendees.")
+		return redirect('my_events')
 
 	if request.user.is_superuser:
 		event.delete()
@@ -203,9 +270,10 @@ def delete_event(request, event_id):
 	else:
 		messages.error(request, "You are not authorized to delete this event")
 		return redirect('my_events')
+"""
 
 
-def update_event(request, event_id):
+"""def update_event(request, event_id):
 	event = Event.objects.get(pk=event_id)
 	if request.user.is_superuser:
 		form = EventForm(request.POST or None, instance=event)
@@ -219,13 +287,29 @@ def update_event(request, event_id):
 
 	return render(request, 'events/update_event.html', 
 		{'event': event, 'form':form}) 
+"""
+
+@login_required
+def update_event(request, event_id):
+	event = get_object_or_404(Event, pk=event_id)
+
+	if request.method == "POST":
+		form = EventForm(request.POST, request.FILES, instance=event, user=request.user)
+		if form.is_valid():
+			form.save()
+			messages.success(request, "Your event has been updated")
+			return redirect('my_events')
+	else:
+		form = EventForm(instance=event, user=request.user)
+
+	return render(request, 'events/update_event.html', {'event': event, 'form': form})
 
 def add_event(request):
 	submitted = False
 	if request.method == "POST":
 		if request.user.is_superuser:
 			#form = EventFormAdmin(request.POST)
-			form = EventForm(request.POST, request.FILES)
+			form = EventForm(request.POST, request.FILES, user=request.user)
 			if form.is_valid():
 				#form.save()
 				event = form.save(commit=False)
@@ -233,7 +317,7 @@ def add_event(request):
 				event.save()
 				return HttpResponseRedirect('/add_event?submitted=True')
 		else:
-			form = EventForm(request.POST, request.FILES)
+			form = EventForm(request.POST, request.FILES, user=request.user)
 			if form.is_valid():
 				#form.save()
 				event = form.save(commit=False)
@@ -244,9 +328,9 @@ def add_event(request):
 		#just going to the page, not submitting
 		if request.user.is_superuser:
 			#form = EventFormAdmin
-			form = EventForm
+			form = EventForm(user=request.user)
 		else:
-			form = EventForm
+			form = EventForm(user=request.user)
 
 		if 'submitted' in request.GET:
 			submitted = True

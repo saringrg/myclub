@@ -2,113 +2,137 @@
 
 {% block content %}
 
-	<nav class="custom-nav">
-		<div>
-			<h4>Venues</h4>
-		</div>
-		<div>
-			<form class="d-flex" method=POST action="{% url 'search-venues' %}">
-		        {% csrf_token %}
+    <style>
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            overflow: hidden;
+        }
 
-		        <input class="form-control me-2 small-search-input" type="search" placeholder="Search venues" aria-label="Search" name="searched">
-		        <button class="btn btn-outline-dark btn-light btn-sm btn-custom" type="submit">Search</button>
-	      </form>	
-		</div>
-	</nav>
+        .card:hover {
+            transform: scale(1.05); /* For enlarging on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
 
-	<br>
-	
-	<div class="row row-cols-1 row-cols-md-3 g-4">
-		{% for venue in venues %}
-			<div class="col">
-			    <div class="card h-100">
-			    <!--{% if venue.venue_image %}
-			      <img src="{{ venue.venue_image.url }}" class="card-img-top" alt="..." style="height: 250px; width: 100%;">
-			    {% endif %}-->
-			      <div class="card-body">
-			        <h5 class="card-title"><a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">{{ venue }}</a></h5>
-			        <p class="card-text">
-			        	<ul>
-				            {% if venue.address %}
-				              <li>Address: {{ venue.address }}</li>
-				            {% endif %}
+        .card a {
+            color: inherit; /* Inherit the card text color */
+            text-decoration: none; /* Remove underline */
+        }
 
-				            {% if venue.zip_code %}
-				              <li>Zip Code: {{ venue.zip_code }}</li>
-				            {% endif %}
+        .card a:hover {
+            text-decoration: none; /* Remove underline on hover */
+        }
 
-				            {% if venue.phone %}
-				              <li>Phone: {{ venue.phone }}</li>
-				            {% endif %}
+        .card-text ul {
+            list-style-type: none; /* Remove bullet points from <ul> */
+            padding: 0; /* Remove default padding */
+        }
 
-				            {% if venue.email_address %}
-				              <li>Email: {{ venue.email_address }}</li>
-				            {% endif %}
+        .card-body {
+            padding: 20px;
+        }
 
-				            {% if venue.web %}
-				              <li>Website: <a href="{{ venue.web }}">{{ venue.web }}</a></li>
-				            {% endif %}
-				            
-				            {% if venue_owner %}
-				              <li>Owner: {{ venue_owner }}</li>
-				            {% endif %}
-				        </ul>
-			        </p>
-			      </div>
-			    </div>
-			  </div> 
-		{% endfor %}
-	</div>
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
 
-	
+        .card-text li {
+            margin-bottom: 5px;
+        }
+    </style>
 
-	<!--<br><br>
-	{{ venues }}<br>
-	Has Previous: {{ venues.has_previous }}<br>
-	Has Next: {{ venues.has_next }}<br>
-	Current Page: {{ venues.number }}<br>
-	Number of Pages: {{ venues.paginator.num_pages }}<br>
-	<hr><br><br>-->
+    <nav class="custom-nav">
+        <div>
+            <h4>Venues</h4>
+        </div>
+        <div>
+            <form class="d-flex" method="POST" action="{% url 'search-venues' %}">
+                {% csrf_token %}
+                <input class="form-control me-2 small-search-input" type="search" placeholder="Search venues" aria-label="Search" name="searched">
+                <button class="btn btn-outline-dark btn-light btn-sm btn-custom" type="submit">Search</button>
+            </form>    
+        </div>
+    </nav>
 
-	<br><br><br>
-	<hr>
+    <br>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for venue in venues %}
+            <div class="col">
+                <a href="{% url 'show-venue' venue.id %}" style="text-decoration: none;">
+                    <div class="card h-100">
+                        <!-- Uncomment the following block to display venue image if available
+                        {% if venue.venue_image %}
+                            <img src="{{ venue.venue_image.url }}" class="card-img-top" alt="Venue image" style="height: 250px; object-fit: cover;">
+                        {% endif %}
+                        -->
+                        <div class="card-body">
+                            <h5 class="card-title">{{ venue }}</h5>
+                            <p class="card-text">
+                                <ul>
+                                    {% if venue.address %}
+                                        <li>Address: {{ venue.address }}</li>
+                                    {% endif %}
 
-	<nav aria-label="Page navigation example">
-		<ul class="pagination justify-content-center">
-	    
-			{% if venues.has_previous %}
-				<li class="page-item">
-					<a class="page-link" href="?page=1">&laquo First</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="?page={{ venues.previous_page_number }}">Previous</a>
-				</li>
+                                    {% if venue.zip_code %}
+                                        <li>Zip Code: {{ venue.zip_code }}</li>
+                                    {% endif %}
 
-			{% endif %}
+                                    {% if venue.phone %}
+                                        <li>Phone: {{ venue.phone }}</li>
+                                    {% endif %}
 
-			{% for i in nums %}
-				<li class="page-item">
-					<a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
-				</li>
-			{% endfor %}
+                                    {% if venue.email_address %}
+                                        <li>Email: {{ venue.email_address }}</li>
+                                    {% endif %}
 
-			<!--
-			<li class="page-item disabled">
-				<a href="#" class="page-link">Page {{ venues.number }} of {{ venues.paginator.num_pages }}</a>
-			</li>-->
+                                    {% if venue.web %}
+                                        <li>Website: <a href="{{ venue.web }}" target="_blank">{{ venue.web }}</a></li>
+                                    {% endif %}
 
-			{% if venues.has_next %}
-				<li class="page-item">
-					<a class="page-link" href="?page={{ venues.next_page_number }}">next</a>
-				</li>
-				<li class="page-item">
-					<a class="page-link" href="?page={{ venues.paginator.num_pages }}">Last &raquo</a>
-				</li>	
+                                    {% if venue_owner %}
+                                        <li>Owner: {{ venue_owner }}</li>
+                                    {% endif %}
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div> 
+        {% endfor %}
+    </div>
 
-			{% endif %}
+    <br><br><br>
+    <hr>
 
-		</ul>
-	</nav>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if venues.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ venues.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for i in nums %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                </li>
+            {% endfor %}
+
+            {% if venues.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ venues.next_page_number }}">next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ venues.paginator.num_pages }}">Last &raquo</a>
+                </li>    
+            {% endif %}
+        </ul>
+    </nav>
 
 {% endblock %}
-

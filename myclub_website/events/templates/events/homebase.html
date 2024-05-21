@@ -157,6 +157,16 @@
         flex-basis: 35%; /* Adjust the percentage as needed */
       }
 
+      /* Hide scrollbar while still allowing scrolling */
+      * {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+      }
+
+      *::-webkit-scrollbar {  /* WebKit browsers */
+        display: none;
+      }
+
     </style>
   </head>
   <body>
@@ -196,7 +206,7 @@
 
   	  {% endblock %}
     </div>
-    <br><br><br><br><br>
+    <br><br><br><br><br><br>
 
     {% include 'events/footer.html' %}
 

@@ -31,27 +31,23 @@
 
 	<br>
 
-	<table class="table table-hover table-bordered">
-
-		{% for venue in venues %}
-			{% if user.is_authenticated %}
-				{% if user.id == venue.owner %}
-					<tr>
-						<td>
-							<a href="{% url 'show-venue' venue.id %}" style="text-decoration: none; color:black;">{{ venue }}</a>
-						</td>
-						
-								<td align="right">
-									<a href="{% url 'update-venue' venue.id %}" class="btn btn-outline-success btn-sm"><i class="bi bi-pencil-square"></i></a>
-									<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i></a>
-								</td>
-				{% endif %}
-			{% endif %}
-
-			</tr>
-		{% endfor %}
-
-	</table>
+	{% if not venues %}
+        <p>You haven't added any venues. Add your venue to see it listed here.</p>
+    {% else %}
+		<table class="table table-hover table-bordered">
+			{% for venue in venues %}
+				<tr>
+					<td>
+						<a href="{% url 'show-venue' venue.id %}" style="text-decoration: none; color:black;">{{ venue }}</a>
+					</td>
+					<td align="right">
+						<a href="{% url 'update-venue' venue.id %}" class="btn btn-outline-success btn-sm"><i class="bi bi-pencil-square"></i></a>
+						<a href="{% url 'delete-venue' venue.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash3"></i></a>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
 
 	<!--<br><br>
 	{{ venues }}<br>
@@ -61,7 +57,7 @@
 	Number of Pages: {{ venues.paginator.num_pages }}<br>
 	<hr><br><br>-->
 
-	<br><br><br>
+	<br>
 	<hr>
 
 	<nav aria-label="Page navigation example">

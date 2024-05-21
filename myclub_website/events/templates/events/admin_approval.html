@@ -274,6 +274,7 @@
 				                $('#updateVenueModal').find('#id_phone').val(response.phone);
 				                $('#updateVenueModal').find('#id_web').val(response.web);
 				                $('#updateVenueModal').find('#id_email_address').val(response.email_address);
+				                $('#updateVenueModal').find('#id_capacity').val(response.capacity);
 				                $('#updateVenueModal').find('#id_venue_description').val(response.description);
 				                $('#updateVenueModal').find('#venue_id').val(venue_id);
 				            },
@@ -295,7 +296,8 @@
 					            <th>Zip</th>
 					            <th>Phone</th>
 					            <th>Email</th>
-					            <th>Website</th>
+					            <!--<th>Website</th>-->
+					            <th>Capacity</th>
 					            <th>Actions</th>
 					        </tr>
 					    </thead>
@@ -307,7 +309,8 @@
 					            <td>{{ venue.zip_code }}</td>
 					            <td>{{ venue.phone }}</td>
 					            <td>{{ venue.email_address }}</td>
-					            <td><a href="{{ venue.web }}">{{ venue.web }}</a></td>
+					            <!--<td><a href="{{ venue.web }}">{{ venue.web }}</a></td>-->
+					            <td>{{ venue.capacity }}</td>
 					            <td>
 					         		<!-- Modal Trigger Button -->
 									<a href="#" class="btn btn-outline-success btn-sm btn-update-venue" data-bs-toggle="modal" data-bs-target="#updateVenueModal" data-venue-id="{{ venue.id }}"><i class="bi bi-pencil-square"></i></a>

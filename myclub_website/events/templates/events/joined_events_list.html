@@ -1,18 +1,46 @@
 {% extends 'events/base.html' %}
 
 {% block content %}
+
+    <style>
+        .custom-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .custom-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-card-header {
+            background-color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .custom-card-body {
+            padding: 20px;
+        }
+
+        .custom-card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-list {
+            padding-left: 20px;
+        }
+
+        .custom-list li {
+            margin-bottom: 5px;
+        }
+    </style>
+
     <nav class="custom-nav">
-        <div style="display: flex;">
-            <a href="{% url 'my_events' %}" style="text-decoration: none; color: black;">
-                <h5 onmouseover="this.style.color='#f05537'" onmouseout="this.style.color='black'">My Events</h5>
-            </a> 
-            
-            <span style="margin-left: 5px; margin-right: 5px;">|</span>
-
-            <a href="{% url 'joined_events_list' %}" style="text-decoration: none; color: black;">
-                <h5 onmouseover="this.style.color='#f05537'" onmouseout="this.style.color='black'">Joined Events</h5>
-            </a>
-
+        <div>
+            <h4>Events Joined</h4>
         </div>
         <div>
             <a class="d-flex" href="{% url 'list-events' %}" style="text-decoration: none;">
@@ -23,47 +51,50 @@
 
     <br>
 
-    {% for joined_event in joined_events %}
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>{{joined_event.event.name}}</h5>
-            <div>
-                <a href="{% url 'generate_pdf' joined_event.event.id %}" class="btn btn-outline-dark btn-sm me-2"><i class="bi bi-download"></i></a> 
+    {% if not joined_events %}
+        <p>You haven't joined any events.</p>
+    {% else %}
+        {% for joined_event in joined_events %}
+            <div class="card custom-card">
+                <div class="card-header custom-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="custom-card-title">{{ joined_event.event.name }}</h5>
+                    <div>
+                        <a href="{% url 'generate_pdf' joined_event.event.id %}" class="btn btn-outline-dark btn-sm me-2"><i class="bi bi-download"></i></a> 
+                    </div>
+                </div>
+                <div class="card-body custom-card-body">
+                    <h6 class="card-title">Venue: {{ joined_event.event.venue }}</h6>
+                    <p class="card-text">
+                        <ul class="list-unstyled custom-list">
+                            {% if joined_event.event.event_date %}
+                                <li>Date: {{ joined_event.event.event_date }}</li>
+                            {% endif %}
+
+                            {% if joined_event.event.venue.web %}
+                                <li>Website: {{ joined_event.event.venue.web }}</li>
+                            {% endif %}
+
+                            {% if joined_event.event.manager %}
+                                <li>Event Host: {{ joined_event.event.manager }}</li>
+                            {% endif %}
+
+                            {% if joined_event.event.description %}
+                                <li>Description: {{ joined_event.event.description }}</li>
+                            {% endif %}
+                        </ul>
+                    </p>
+                </div>
             </div>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Venue: {{ joined_event.event.venue }}</h6>
-            <p class="card-text">
-                <ul>
-                    {% if joined_event.event.event_date %}
-                        <li>Date: {{ joined_event.event.event_date }}</li>
-                    {% endif %}
 
-                    {% if joined_event.event.venue.web %}
-                        <li>Website: {{ joined_event.event.venue.web }}</li>
-                    {% endif %}
-
-                    {% if joined_event.event.manager %}
-                        <li>Event Host: {{ joined_event.event.manager }}</li>
-                    {% endif %}
-
-                    {% if joined_event.event.description %}
-                        <li>Description: {{ joined_event.event.description }}</li>
-                    {% endif %}
-                </ul>
-            </p>
-          </div>
-        </div>
-
-        <br><br>
-    {% endfor%} 
+            <br><br>
+        {% endfor %} 
+    {% endif %}
 
     <br>
     <hr>
 
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-        
             {% if events.has_previous %}
                 <li class="page-item">
                     <a class="page-link" href="?page=1">&laquo First</a>
@@ -71,7 +102,6 @@
                 <li class="page-item">
                     <a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a>
                 </li>
-
             {% endif %}
 
             {% for i in nums %}
@@ -80,11 +110,6 @@
                 </li>
             {% endfor %}
 
-            <!--
-            <li class="page-item disabled">
-                <a href="#" class="page-link">Page {{ venues.number }} of {{ venues.paginator.num_pages }}</a>
-            </li>-->
-
             {% if events.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ events.next_page_number }}">next</a>
@@ -92,11 +117,8 @@
                 <li class="page-item">
                     <a class="page-link" href="?page={{ events.paginator.num_pages }}">Last &raquo</a>
                 </li>   
-
             {% endif %}
-
         </ul>
     </nav>
     
 {% endblock %}
-
