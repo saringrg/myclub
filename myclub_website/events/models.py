@@ -44,6 +44,12 @@ class Event(models.Model):
 		if Event.objects.filter(venue=self.venue, event_date=self.event_date).exclude(pk=self.pk).exists():
 			raise ValidationError('Sorry! An event for this venue on this date already exists.')
 
+		# Prevent updating an event if the event date has already passed
+		if self.pk is not None:  # Only check if the event already exists (i.e., it's an update)
+			existing_event = Event.objects.get(pk=self.pk)
+			if existing_event.event_date < date.today():
+				raise ValidationError('Cannot update an event that has already passed.')
+
 		# Check if the venue is private and the user is not the owner
 		#if self.venue.make_public is False and self.manager.id != self.venue.owner.id:
 		#	raise ValidationError('You are not authorized to create an event for this venue.')

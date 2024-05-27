@@ -20,6 +20,48 @@
             </script>
             <br>
 
+            <style>
+                .card {
+                    border-radius: 10px; /* Rounded corners */
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                    overflow: hidden;
+                }
+
+                .card:hover {
+                    transform: scale(1.02); /* Enlarge the card on hover */
+                    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+                }
+
+                .card a {
+                    color: inherit; /* Inherit the card text color */
+                    text-decoration: none; /* Remove underline */
+                }
+
+                .card a:hover {
+                    text-decoration: none; /* Remove underline on hover */
+                }
+
+                .card-body {
+                    padding: 20px; /* Consistent padding */
+                }
+
+                .card-title {
+                    font-size: 1.25rem;
+                    margin-bottom: 0.75rem;
+                }
+
+                .card-text ul {
+                    list-style-type: none; /* Remove bullet points from <ul> */
+                    padding: 0; /* Remove default padding */
+                    margin: 0; /* Remove default margin */
+                }
+
+                .card-text li {
+                    margin-bottom: 5px;
+                }
+            </style>
+
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for event in events %}
                     <div class="col">
@@ -69,8 +111,8 @@
             <div class="alert alert-danger" id="myAlert" role="alert">
                 No {{searched}} related event found!
             </div>
-            <br><br>
-            <br><br>
+            <br><br><br><br>
+            <br><br><br>
 
             <script>
             // JavaScript code to redirect to the my_events page after 2 seconds
@@ -83,8 +125,8 @@
         <div class="alert alert-success" id="myAlert" role="alert">
             Hey! You forgot to search for an event!
         </div>
-        <br><br>
-        <br><br>
+        <br><br><br><br>
+        <br><br><br>
 
         <script>
             // JavaScript code to redirect to the my_events page after 2 seconds

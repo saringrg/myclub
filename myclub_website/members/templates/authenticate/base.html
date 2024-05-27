@@ -28,6 +28,16 @@
       .navbar-brand:hover {
         color: var(--bs-orange) !important;
       }
+
+      /* Hide scrollbar while still allowing scrolling */
+      * {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+      }
+
+      *::-webkit-scrollbar {  /* WebKit browsers */
+        display: none;
+      }
     </style>
   </head>
   <body>

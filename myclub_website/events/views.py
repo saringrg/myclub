@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from .models import Event, Venue, MyClubUser
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import VenueForm, EventForm, EventRegistrationForm, VenueFormAdmin, EventFormAdmin
+from .forms import VenueForm, EventForm, EventUpdateForm, EventRegistrationForm, VenueFormAdmin, EventFormAdmin
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -19,6 +19,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
+from .signals import user_joined_event
 
 from django.views.decorators.csrf import csrf_exempt
 import hmac
@@ -145,7 +146,7 @@ def my_venues(request):
 	venue_list = Venue.objects.filter(owner=request.user.id)
 
 	#set up pagination
-	p = Paginator(venue_list, 10)
+	p = Paginator(venue_list, 6)
 	page = request.GET.get('page')
 	venues = p.get_page(page)
 	nums = "a" * venues.paginator.num_pages
@@ -157,7 +158,7 @@ def my_events(request):
 	event_list = Event.objects.filter(manager=request.user).order_by('-event_date')
 
 	#set up pagination
-	p = Paginator(event_list, 10)
+	p = Paginator(event_list, 6)
 	page = request.GET.get('page')
 	events = p.get_page(page)
 	nums = "a" * events.paginator.num_pages
@@ -294,13 +295,13 @@ def update_event(request, event_id):
 	event = get_object_or_404(Event, pk=event_id)
 
 	if request.method == "POST":
-		form = EventForm(request.POST, request.FILES, instance=event, user=request.user)
+		form = EventUpdateForm(request.POST, request.FILES, instance=event, user=request.user)
 		if form.is_valid():
 			form.save()
 			messages.success(request, "Your event has been updated")
 			return redirect('my_events')
 	else:
-		form = EventForm(instance=event, user=request.user)
+		form = EventUpdateForm(instance=event, user=request.user)
 
 	return render(request, 'events/update_event.html', {'event': event, 'form': form})
 
@@ -362,8 +363,8 @@ def search_venues(request):
 def search_events(request):
 	if request.method == "POST":
 		searched = request.POST.get('searched', '')
-		# Search in name, venue, and description fields
-		events = Event.objects.filter(Q(name__icontains=searched) | Q(venue__name__icontains=searched) | Q(description__icontains=searched))
+		# Search in name, venue, venue address and description fields
+		events = Event.objects.filter(Q(name__icontains=searched) | Q(venue__name__icontains=searched) | Q(venue__address__icontains=searched) | Q(description__icontains=searched))
 
 		return render(request, 'events/search_events.html', {'searched': searched, 'events': events}) 
 	else:
@@ -504,6 +505,7 @@ def esewa_payment_success(request):
 		messages.error(request, "Registration failed! Sorry, the venue is already full.")
 	else:
 		MyClubUser.objects.create(user=request.user, event=event)
+		user_joined_event.send(sender=MyClubUser, event=event, user=request.user)
 		messages.success(request, "You have successfully registered for the event.")
 
 	return redirect('joined_events_list')

@@ -6,6 +6,40 @@
         .custom-container {
             max-width: 320px; /* Adjust the width as needed */
         }
+
+        .custom-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .custom-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-card-header {
+            background-color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .custom-card-body {
+            padding: 15px;
+        }
+
+        .custom-card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-list {
+            padding-left: 20px;
+        }
+
+        .custom-list li {
+            margin-bottom: 5px;
+        }
     </style>
 
     <h5 class="custom-head">Events for {{ year }}/{{ month }}/{{ day }}</h5>

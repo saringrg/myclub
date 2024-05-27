@@ -171,8 +171,8 @@ class EventForm(ModelForm):
 		super(EventForm, self).__init__(*args, **kwargs)
 
 	def clean_registration_fee(self):
-		registration_fee = self.cleaned_data['registration_fee']
-		if registration_fee < 0:
+		registration_fee = self.cleaned_data.get('registration_fee')
+		if registration_fee is not None and registration_fee < 0:
 			raise forms.ValidationError("Registration fee cannot be negative")
 		return registration_fee
 
@@ -195,9 +195,60 @@ class EventForm(ModelForm):
 
 	def clean(self):
 		cleaned_data = super().clean()
-		if self.instance and self.instance.event_date < date.today():
-			raise ValidationError("You cannot update a past event.")
+		event_date = cleaned_data.get('event_date')
+		if self.instance and self.instance.pk:
+			if event_date and event_date < date.today():
+				raise ValidationError("You cannot update a past event.")
 		return cleaned_data
+
+#user event form
+class EventUpdateForm(ModelForm):
+	class Meta:
+		model = Event
+		fields = ('name', 'event_date', 'venue', 'registration_fee', 'description')
+		labels = {
+			'name': 'Event Name',
+			'event_date': 'Event Date',
+			'venue': 'Venue',
+			#'attendees': 'Attendees',
+			'registration_fee': 'Registration Fee',
+			'description': 'Event Description',
+		}
+
+		widgets = {
+			'name': forms.TextInput(attrs={'class':'form-control'}),
+			'event_date': forms.TextInput(attrs={'class':'form-control', 'placeholder':'YYYY-MM-DD'}),
+			'venue': forms.Select(attrs={'class':'form-select', 'readonly': 'readonly'}),
+			#'attendees': forms.SelectMultiple(attrs={'class':'form-select'}),
+			'registration_fee': forms.NumberInput(attrs={'class': 'form-control'}),
+			'description': forms.Textarea(attrs={'class':'form-control'}),
+		}
+
+	def __init__(self, *args, **kwargs):
+		self.user = kwargs.pop('user', None)
+		super(EventUpdateForm, self).__init__(*args, **kwargs)
+		self.fields['venue'].disabled = True  # Ensures the field is not modifiable
+
+	def clean_registration_fee(self):
+		registration_fee = self.cleaned_data.get('registration_fee')
+		if registration_fee is not None and registration_fee < 0:
+			raise forms.ValidationError("Registration fee cannot be negative")
+		return registration_fee
+
+	def clean_event_date(self):
+		event_date = self.cleaned_data.get('event_date')
+		if event_date < date.today():
+			raise ValidationError("Event date cannot be in the past.")
+		return event_date
+
+	def clean(self):
+		cleaned_data = super().clean()
+		event_date = cleaned_data.get('event_date')
+		if self.instance and self.instance.pk:
+			if event_date and event_date < date.today():
+				raise ValidationError("You cannot update a past event.")
+		return cleaned_data
+
 		
 #create a venue form
 class VenueForm(ModelForm):
